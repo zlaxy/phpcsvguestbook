@@ -17,6 +17,6 @@ Archive: https://github.com/zlaxy/phpcsvguestbook/archive/master.zip
 
 Using:
 
-If you have uploaded files to a subfolder "/guestbook" of your webserver, then http://yourserver.domain/guestbook/ will open a guestbook. Following the link "http://yourserver.domain/guestbook/administration.php" will open the administration panel.
+If you have uploaded files to a subfolder "/guestbook" of your webserver, then http://yourserver.domain/guestbook/ will open a guestbook. Following the link http://yourserver.domain/guestbook/administration.php will open the administration panel.
 
 For changing appearance you can edit page.php like simple html (for example: add css tags).
