@@ -1,12 +1,24 @@
 <?php
 /**
- * Main program file of PHPCSV Guestbook version 0.9
+ * Main program file of PHPCSV Guestbook version 0.92
  * See settings.php for configuration.
  * Edit page.php for change appearance.
  * See license.txt for licensing information.
  */
 session_start();
 include "settings.php";
+
+function SendMail() {
+    global $Titles;
+    global $GBnotificationmailto;
+    global $GBnotificationmailfrom;
+    $message=$_POST['name']." ".$Titles[From]." ".$_POST['from']."("
+    .$_POST['link'].", ".$_POST['email'].") ".$Titles[Wrote].":\r\n\r\n".$_POST['text']
+    ."\r\n\r\n_____\r\n".$Titles[MailAdmin];
+    mail($GBnotificationmailto, $Titles[MailSubject], $message,
+    "From: ".$GBnotificationmailfrom." \r\n"."Content-type: text/plain; charset=utf-8\r\n"
+    ."X-Mailer: PHP/".phpversion());
+}
 
 function ReadEntries() {
     global $GBdata;
@@ -56,7 +68,7 @@ function AddEntryView() {
         echo "  $Titles[Link]: <input type=text name=\"link\" value=\"",$Values["link"],"\" maxlength=255><br>\n";
         echo "  $Titles[Email]: <input type=text name=\"email\" value=\"",$Values["email"],"\" maxlength=255> ($Titles[NotPublic])<br>\n";
         echo "  $Titles[Text]:<br>\n  <textarea name=\"text\" wrap=virtual cols=50 rows=5  maxlength=7168>",$Values["text"],"</textarea><br>\n";
-        echo "  $Titles[Captcha]: <font color=\"transparent\">$captchanumber11</font><font>$captchanumber11</font><font>$captchanumber12</font> $Titles[CaptchaPlus] <font>$captchanumber21</font><font>$captchanumber22</font><font color=\"transparent\">$captchanumber21</font> = <input type=text name=\"captcha\" size=2 maxlength=2> ?<br>\n";
+        echo "  $Titles[Captcha]: <font class=\"text\">$captchanumber11</font><font>$captchanumber11</font><font>$captchanumber12</font> $Titles[CaptchaPlus] <font>$captchanumber21</font><font>$captchanumber22</font><font class=\"text\">$captchanumber21</font> = <input type=text name=\"captcha\" size=2 maxlength=2> ?<br>\n";
         echo "  <input type=submit name=\"submit\" value=\"$Titles[Submit]\">\n";
         echo "</form>\n";
         if ($PageStatus=="emptyname") echo "$Titles[EmptyName]<br>\n";
@@ -73,16 +85,16 @@ function EntriesView() {
         else {
             $Entries=array_reverse($Entries);
             foreach($Entries as $e=>$Entry) {
-                echo "  ",$Entry[7],". ";
+                echo "  <div class=\"entry\"><div class=\"messages_header\"><h4>",$Entry[7],". ";
                 if ($Entry[2]) echo "<a href=\"$Entry[2]\">";
                 echo "<b>",$Entry[0],"</b>";
                 if ($Entry[2]) echo "</a>";
                 if ($Entry[1]) echo " ",$Titles[From]," <b>",$Entry[1],"</b>";
-                echo ", ",date("j.m.Y, H:i",$Entry[5]),", ",$Titles[Wrote],":<br>\n";
+                echo ", ",date("j.m.Y, H:i",$Entry[5]),", ",$Titles[Wrote],":</div></h4><br>\n";
                 echo "  ",nl2br($Entry[4]),"<br>\n";
                 if ($Entry[6]) echo "<br><i><b>$Titles[Response]:</b><br>\n";
                 if ($Entry[6]) echo nl2br($Entry[6]),"</i><br>\n";
-                echo "<hr>\n";
+                echo "</div><hr>\n";
             }
         }
 }
@@ -91,8 +103,10 @@ if($_POST['submit']) {
     if(!$_POST['text']) $PageStatus="emptytext";
     if(!$_POST['name']) $PageStatus="emptyname";
     if(($_POST['name'])&&($_POST['text']))
-        if ($_POST["captcha"]&&(md5(base64_encode($_POST["captcha"]))==$_SESSION["captcha"])) AddEntry();
-            else $PageStatus="wrongcaptcha";
+        if ($_POST["captcha"]&&(md5(base64_encode($_POST["captcha"]))==$_SESSION["captcha"])) {
+            AddEntry();
+            if ($GBnotificationmailto) SendMail();
+        } else $PageStatus="wrongcaptcha";
     if (($PageStatus)&&!($PageStatus=="added")) {
         $SESSION["value"]["name"]=$_POST['name'];
         $SESSION["value"]["from"]=$_POST['from'];

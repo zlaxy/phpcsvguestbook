@@ -1,6 +1,6 @@
 <?php
 /**
- * Settings file of PHPCSV Guestbook version 0.9
+ * Settings file of PHPCSV Guestbook version 0.92
  * Edit page.php for change appearance.
  * $GBdata parameter for changing entries data file.
  * Please, change $GBadmin and $GBpassword parameters for access to administration page.
@@ -10,6 +10,8 @@
 $GBdata="gbdb.csv";
 $GBadmin="root";
 $GBpassword="password";
+$GBnotificationmailto=""; // leave empty if you don't want send notification
+$GBnotificationmailfrom="";
 $Titles[HeadTitle]="Guestbook";
 $Titles[Page]="Guestbook";
 $Titles[Name]="Your name";
@@ -47,4 +49,6 @@ $Titles[AdminDelete]="Delete";
 $Titles[AdminCancel]="Cancel";
 $Titles[AdminSureDel]="Are you sure to delete";
 $Titles[AdminSureDelMessages]="messages";
+$Titles[MailSubject]="New entry in your guestbook";
+$Titles[MailAdmin]="You can edit, delete or reply this message via admin page";
 ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Administration program file of PHPCSV Guestbook version 0.9
+ * Administration program file of PHPCSV Guestbook version 0.92
  * See settings.php for configuration.
  * Edit page.php for change appearance.
  */
@@ -124,10 +124,14 @@ if ($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))) {
 <head>
   <title><?php echo $Titles[HeadTitle];?></title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Ubuntu:regular&amp;subset=Latin,Cyrillic">
+  <link rel="stylesheet" type="text/css" href="anthrstlsht.css">
 </head>
 <body>
+<div class="container">
 <?php AdminHeaderView();?>
 <hr>
 <?php AdminEntriesView();?>
+</div>
 </body>
 </html>

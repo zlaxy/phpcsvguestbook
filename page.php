@@ -1,17 +1,22 @@
 <?php
 /**
- * Main page of PHPCSV Guestbook version 0.9
+ * Main page of PHPCSV Guestbook version 0.92
  * See settings.php for configuration.
  * For changing appearance you can edit this file like simple html. For example: add css tags.
  */
-?><html>
+?><!DOCTYPE html>
+<html>
 <head>
   <title><?php echo $Titles[HeadTitle];?></title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Ubuntu:regular&amp;subset=Latin,Cyrillic">
+  <link rel="stylesheet" type="text/css" href="anthrstlsht.css">
 </head>
 <body>
+<div class="container">
 <?php AddEntryView();?>
 <hr>
 <?php EntriesView();?>
+</div>
 </body>
 </html>

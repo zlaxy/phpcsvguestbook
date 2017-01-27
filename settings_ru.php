@@ -1,6 +1,6 @@
 <?php
 /**
- * Russian version of settings file PHPCSV Guestbook version 0.9
+ * Russian version of settings file PHPCSV Guestbook version 0.92
  * Для руссификации гостевой книги замените оригинальный settings.php на содержимое этого файла.
  * Редактируйте page.php для изменения внешнего вида.
  * $GBdata параметр служит для смены файла данных записей гостевой книги.
@@ -11,6 +11,8 @@
 $GBdata="gbdb.csv";
 $GBadmin="root";
 $GBpassword="password";
+$GBnotificationmailto=""; // оставьте поле пустым, если не хотите отправки уведомлений о новых записях
+$GBnotificationmailfrom="";
 $Titles[HeadTitle]="Гостевая книга";
 $Titles[Page]="Гостевая книга";
 $Titles[Name]="Ваше имя";
@@ -48,4 +50,6 @@ $Titles[AdminDelete]="Удалить";
 $Titles[AdminCancel]="Отменить";
 $Titles[AdminSureDel]="Вы уверены, что хотите удалить";
 $Titles[AdminSureDelMessages]="сообщений";
+$Titles[MailSubject]="Новая запись в вашей гостевой книге";
+$Titles[MailAdmin]="Вы можете редактировать, удалить или ответить на эту запись через страницу администрирования";
 ?>
