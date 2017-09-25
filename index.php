@@ -1,6 +1,6 @@
 <?php
 /**
- * Main program file of PHPCSV Guestbook version 0.92
+ * Main program file of PHPCSV Guestbook version 0.93
  * See settings.php for configuration.
  * Edit page.php for change appearance.
  * See license.txt for licensing information.
@@ -81,8 +81,60 @@ function EntriesView() {
     global $Titles;
     global $DataStatus;
     global $Entries;
+    global $GBpagination;
     if ($DataStatus=="empty") echo "$Titles[EmptyFile]";
-        else {
+        else if (($GBpagination>0)&&(count($Entries)>$GBpagination)) {
+            $Entries=array_reverse($Entries);
+            if ($_GET['page']) switch ($_GET['page']) {
+                case $Titles[First]:
+                    $CurrentPage=0;
+                    break;
+                case $Titles[Last]:
+                    $CurrentPage=intdiv(count($Entries),$GBpagination);
+                    break;
+                case "$Titles[Previous]":
+                    $CurrentPage=$_SESSION['currentpage']-1;
+                    break;
+                case "$Titles[Next]":
+                    $CurrentPage=$_SESSION['currentpage']+1;
+                    break;
+                default:
+                    $CurrentPage=$_GET['page']-1;
+            } 
+                else $CurrentPage=0;
+            for ($e = ($GBpagination*$CurrentPage); $e < ($GBpagination*($CurrentPage+1)); $e++) {
+                if ($e>=count($Entries)) break;
+                echo "  <div class=\"entry\"><div class=\"messages_header\"><h4>",$Entries[$e][7],". ";
+                if ($Entries[$e][2]) echo "<a href=\"$Entries[$e][2]\">";
+                echo "<b>",$Entry[0],"</b>";
+                if ($Entries[$e][2]) echo "</a>";
+                if ($Entries[$e][1]) echo " ",$Titles[From]," <b>",$Entries[$e][1],"</b>";
+                echo ", ",date("j.m.Y, H:i",$Entries[$e][5]),", ",$Titles[Wrote],":</div></h4><br>\n";
+                echo "  ",nl2br($Entries[$e][4]),"<br>\n";
+                if ($Entries[$e][6]) echo "<br><i><b>$Titles[Response]:</b><br>\n";
+                if ($Entries[$e][6]) echo nl2br($Entries[$e][6]),"</i><br>\n";
+                echo "</div><hr>\n";
+            }
+            echo "<form action=\".\" method=\"get\">\n";
+            if ($CurrentPage>0) {
+                echo "    <input type=\"submit\" value=\"$Titles[First]\" name=\"page\"/>\n";
+                echo "    <input type=\"submit\" value=\"$Titles[Previous]\" name=\"page\"/>\n";
+            }
+            for ($p = ($CurrentPage-2); $p <= ($CurrentPage+2); $p++) {
+                $page = $p+1;
+                if (($p>=0)&&($p<(count($Entries)/$GBpagination))) {
+                    echo "    <input type=\"submit\" value=\"$page\" name=\"page\"";
+                    if ($p==$CurrentPage) echo " disabled";
+                    echo "/>\n";
+                }
+            }
+            if ($CurrentPage<((count($Entries)/$GBpagination)-1)) {
+                echo "    <input type=\"submit\" value=\"$Titles[Next]\" name=\"page\"/>\n";
+                echo "    <input type=\"submit\" value=\"$Titles[Last]\" name=\"page\"/>\n";
+            }
+            echo "</form>\n";
+            $_SESSION['currentpage']=$CurrentPage;
+        } else {
             $Entries=array_reverse($Entries);
             foreach($Entries as $e=>$Entry) {
                 echo "  <div class=\"entry\"><div class=\"messages_header\"><h4>",$Entry[7],". ";

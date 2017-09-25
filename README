@@ -1,8 +1,10 @@
-PHPCSV Guestbook version 0.92
+PHPCSV Guestbook version 0.93
 
 Simple php guestbook with csv file data storage.
 
-PHPCSV Guestbook 0.92 requires PHP 5.0 or higher version.
+Working example: https://zlaxyi.soundragon.su/gb
+
+PHPCSV Guestbook 0.93 requires PHP 5.0 or higher version.
 
 Installation:
 

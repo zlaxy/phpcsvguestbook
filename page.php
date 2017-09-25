@@ -1,6 +1,6 @@
 <?php
 /**
- * Main page of PHPCSV Guestbook version 0.92
+ * Main page of PHPCSV Guestbook version 0.93
  * See settings.php for configuration.
  * For changing appearance you can edit this file like simple html. For example: add css tags.
  */

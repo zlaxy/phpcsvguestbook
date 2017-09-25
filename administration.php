@@ -1,6 +1,6 @@
 <?php
 /**
- * Administration program file of PHPCSV Guestbook version 0.92
+ * Administration program file of PHPCSV Guestbook version 0.93
  * See settings.php for configuration.
  * Edit page.php for change appearance.
  */
