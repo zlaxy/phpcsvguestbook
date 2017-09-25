@@ -1,6 +1,6 @@
 <?php
 /**
- * Russian version of settings file PHPCSV Guestbook version 0.93
+ * Russian version of settings file PHPCSV Guestbook version 0.94
  * Для руссификации гостевой книги замените оригинальный settings.php на содержимое этого файла.
  * Редактируйте page.php для изменения внешнего вида.
  * $GBdata параметр служит для смены файла данных записей гостевой книги.

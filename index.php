@@ -1,6 +1,6 @@
 <?php
 /**
- * Main program file of PHPCSV Guestbook version 0.93
+ * Main program file of PHPCSV Guestbook version 0.94
  * See settings.php for configuration.
  * Edit page.php for change appearance.
  * See license.txt for licensing information.

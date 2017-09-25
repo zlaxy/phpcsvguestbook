@@ -1,6 +1,6 @@
 <?php
 /**
- * Settings file of PHPCSV Guestbook version 0.93
+ * Settings file of PHPCSV Guestbook version 0.94
  * Edit page.php for change appearance.
  * $GBdata parameter for changing entries data file.
  * Please, change $GBadmin and $GBpassword parameters for access to administration page.

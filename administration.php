@@ -1,6 +1,6 @@
 <?php
 /**
- * Administration program file of PHPCSV Guestbook version 0.93
+ * Administration program file of PHPCSV Guestbook version 0.94
  * See settings.php for configuration.
  * Edit page.php for change appearance.
  */
@@ -13,6 +13,7 @@ function ReadEntries() {
     $fhandle=fopen($GBdata,"r") or $DataStatus="empty";
     for($e=0; $entrydata=fgetcsv($fhandle, 16384, ","); $e++) {
         $Entries["$e"]=$entrydata;
+        $Entries["$e"][7]=$e+1;
     } fclose($fhandle);
     if (!$Entries[0]) $DataStatus="empty";
     return $Entries;
@@ -45,6 +46,7 @@ function AdminEntriesView() {
     global $GBadmin;
     global $GBpassword;
     global $AdminEntries;
+    global $GBpagination;
     if ($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))) if ($DataStatus=="empty") echo "$Titles[EmptyFile]\n";
         else if ($_SESSION["DeleteStatus"]=="deletion") {
             echo "  $Titles[AdminSureDel] ",count($_SESSION["DeleteEntries"])," $Titles[AdminSureDelMessages]?\n";
@@ -66,9 +68,56 @@ function AdminEntriesView() {
             echo "<input type=submit name=\"canceledit\" value=\"$Titles[AdminCancel]\">\n";
             echo "</form>\n";
         } else {
-            echo "<form action=administration.php method=post>\n";
-            echo "<table border=1  width=\"100%\">\n  <tr><th></th><th>$Titles[AdminName]</th><th>$Titles[City]</th><th>$Titles[Link]</th><th>$Titles[Email]</th><th>$Titles[AdminMessage]</th><th>$Titles[Response]</th><th>$Titles[AdminDate]</th><th></th></tr>\n";
-            foreach($AdminEntries as $e=>$Entry) echo "  <tr><td>",($e+1),"<input type=checkbox name=\"cb$e\" value=\"checked\"></td><td>$Entry[0]</td><td>$Entry[1]</td><td>$Entry[2]</td><td>$Entry[3]</td><td>",nl2br($Entry[4]),"</td><td>",nl2br($Entry[6]),"</td><td>",date("j.m.Y, H:i",$Entry[5]),"</td><td><input type=submit name=\"submit$e\" value=\"$Titles[AdminEdit]\"></td></tr>\n";
+            if (($GBpagination>0)&&(count($AdminEntries)>$GBpagination)) {
+                $Entries=array_reverse($AdminEntries);
+                if ($_GET['page']) switch ($_GET['page']) {
+                    case $Titles[First]:
+                        $CurrentPage=0;
+                        break;
+                    case $Titles[Last]:
+                        $CurrentPage=intdiv(count($Entries),$GBpagination);
+                        break;
+                    case "$Titles[Previous]":
+                        $CurrentPage=$_SESSION['currentpage']-1;
+                        break;
+                    case "$Titles[Next]":
+                        $CurrentPage=$_SESSION['currentpage']+1;
+                        break;
+                    default:
+                        $CurrentPage=$_GET['page']-1;
+                } else $CurrentPage=0;
+                echo "<form action=administration.php method=\"get\">\n";
+                if ($CurrentPage>0) {
+                    echo "    <input type=\"submit\" value=\"$Titles[First]\" name=\"page\"/>\n";
+                    echo "    <input type=\"submit\" value=\"$Titles[Previous]\" name=\"page\"/>\n";
+                }
+                for ($p = ($CurrentPage-2); $p <= ($CurrentPage+2); $p++) {
+                    $page = $p+1;
+                    if (($p>=0)&&($p<(count($Entries)/$GBpagination))) {
+                        echo "    <input type=\"submit\" value=\"$page\" name=\"page\"";
+                        if ($p==$CurrentPage) echo " disabled";
+                        echo "/>\n";
+                    }
+                }
+                if ($CurrentPage<((count($Entries)/$GBpagination)-1)) {
+                    echo "    <input type=\"submit\" value=\"$Titles[Next]\" name=\"page\"/>\n";
+                    echo "    <input type=\"submit\" value=\"$Titles[Last]\" name=\"page\"/>\n";
+                }
+                echo "</form>\n";
+                echo "<form action=administration.php method=post>\n";
+                echo "<table border=1  width=\"100%\">\n  <tr><th></th><th>$Titles[AdminName]</th><th>$Titles[City]</th><th>$Titles[Link]</th><th>$Titles[Email]</th><th>$Titles[AdminMessage]</th><th>$Titles[Response]</th><th>$Titles[AdminDate]</th><th></th></tr>\n";
+                for ($e = ($GBpagination*$CurrentPage); $e < ($GBpagination*($CurrentPage+1)); $e++) {
+                    if ($e>=count($Entries)) break;
+                    $Entry = $Entries[$e];
+                    echo "  <tr><td>",($Entry[7]),"<input type=checkbox name=\"cb",($Entry[7]-1),"\" value=\"checked\"></td><td>$Entry[0]</td><td>$Entry[1]</td><td>$Entry[2]</td><td>$Entry[3]</td><td>",nl2br($Entry[4]),"</td><td>",nl2br($Entry[6]),"</td><td>",date("j.m.Y, H:i",$Entry[5]),"</td><td><input type=submit name=\"submit",($Entry[7]-1),"\" value=\"$Titles[AdminEdit]\"></td></tr>\n";
+                }
+                $_SESSION['currentpage']=$CurrentPage;
+            } else {
+                echo "<form action=administration.php method=post>\n";
+                echo "<table border=1  width=\"100%\">\n  <tr><th></th><th>$Titles[AdminName]</th><th>$Titles[City]</th><th>$Titles[Link]</th><th>$Titles[Email]</th><th>$Titles[AdminMessage]</th><th>$Titles[Response]</th><th>$Titles[AdminDate]</th><th></th></tr>\n";
+                $Entries=array_reverse($AdminEntries);
+                foreach($Entries as $e=>$Entry) echo "  <tr><td>",($Entry[7]),"<input type=checkbox name=\"cb",($Entry[7]-1),"\" value=\"checked\"></td><td>$Entry[0]</td><td>$Entry[1]</td><td>$Entry[2]</td><td>$Entry[3]</td><td>",nl2br($Entry[4]),"</td><td>",nl2br($Entry[6]),"</td><td>",date("j.m.Y, H:i",$Entry[5]),"</td><td><input type=submit name=\"submit",($Entry[7]-1),"\" value=\"$Titles[AdminEdit]\"></td></tr>\n";
+            }
             echo "</table>\n";
             echo "  <input type=submit name=\"submitdelete\" value=\"$Titles[AdminDeleteChecked]\">\n";
             echo "</form>\n";
