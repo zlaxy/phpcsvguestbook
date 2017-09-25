@@ -106,7 +106,7 @@ function EntriesView() {
                 if ($e>=count($Entries)) break;
                 echo "  <div class=\"entry\"><div class=\"messages_header\"><h4>",$Entries[$e][7],". ";
                 if ($Entries[$e][2]) echo "<a href=\"$Entries[$e][2]\">";
-                echo "<b>",$Entry[0],"</b>";
+                echo "<b>",$Entries[$e][0],"</b>";
                 if ($Entries[$e][2]) echo "</a>";
                 if ($Entries[$e][1]) echo " ",$Titles[From]," <b>",$Entries[$e][1],"</b>";
                 echo ", ",date("j.m.Y, H:i",$Entries[$e][5]),", ",$Titles[Wrote],":</div></h4><br>\n";
