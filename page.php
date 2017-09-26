@@ -1,6 +1,6 @@
 <?php
 /**
- * Main page of PHPCSV Guestbook version 0.94
+ * Main page of PHPCSV Guestbook
  * See settings.php for configuration.
  * For changing appearance you can edit this file like simple html. For example: add css tags.
  */
@@ -14,6 +14,9 @@
 </head>
 <body>
 <div class="container">
+<div style="position: absolute; right: 5px; top: 25px;"><?php /* Absolute position of SearchBar */ ?>
+<?php AddSearchBar();?>
+</div>
 <?php AddEntryView();?>
 <hr>
 <?php EntriesView();?>

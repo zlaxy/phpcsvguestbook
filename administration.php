@@ -1,6 +1,6 @@
 <?php
 /**
- * Administration program file of PHPCSV Guestbook version 0.94
+ * Administration program file of PHPCSV Guestbook
  * See settings.php for configuration.
  * Edit page.php for change appearance.
  */
@@ -23,8 +23,39 @@ function SaveEntries() {
     global $GBdata;
     global $AdminEntries;
     $fhandle=fopen($GBdata,"w");
-    foreach($AdminEntries as $e=>$Entry) fputcsv($fhandle,$Entry);
+    foreach($AdminEntries as $e=>$Entry) {
+        unset($Entry[7]);
+        fputcsv($fhandle,$Entry);
+    }
     fclose($fhandle);
+}
+
+function Search($SearchQuery) {
+    $Entries=ReadEntries();
+    $SearchResultCount=0;
+    $SearchResult=false;
+    foreach($Entries as $e=>$Entry) {
+        for($p=0; $p<7; $p++) {
+            if (mb_stristr($Entry[$p],$SearchQuery)) {
+                $SearchResult[$SearchResultCount][0]=$e;
+                $SearchResult[$SearchResultCount][1]=$Entry;
+                $SearchResultCount++;
+                break;
+            }
+        }
+    }
+    return $SearchResult;
+}
+
+function AddSearchBar() {
+    global $Titles;
+    global $GBsearch;
+    if (!(($_SESSION["EditStatus"]) or ($_SESSION["DeleteStatus"]=="deletion"))) if ($GBsearch) {
+        echo "<form action=administration.php method=post>";
+        echo "<input type=text name=\"serachq\" value=\"\" maxlength=255>";
+        echo "<input type=submit name=\"search\" value=\"$Titles[Search]\">";
+        echo "</form>";
+    }
 }
 
 function AdminHeaderView() {
@@ -33,6 +64,7 @@ function AdminHeaderView() {
     global $GBpassword;
     echo "<h2><a href=\"index.php\">$Titles[AdminHeader]</a></h2>\n";
     if ($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))) {
+        echo "<div style=\"position: absolute; right: 127px; top: 59px;\">",AddSearchBar(),"</div>";
         echo "<form action=administration.php method=post>\n";
         echo "  <p align=\"right\"><input type=submit name=\"exit\" value=\"$Titles[AdminExit]\"></p>\n";
         echo "</form>\n";
@@ -68,6 +100,14 @@ function AdminEntriesView() {
             echo "<input type=submit name=\"canceledit\" value=\"$Titles[AdminCancel]\">\n";
             echo "</form>\n";
         } else {
+            if($_POST['search']&&$_POST['serachq']) {
+                $SearchResult=Search($_POST['serachq']);
+                if ($SearchResult) {
+                    $GBpagination=0;
+                    unset($AdminEntries);
+                    foreach($SearchResult as $n=>$Entry) $AdminEntries[$n]=$Entry[1];
+                } else echo "$Titles[NoResult]: '",$_POST['serachq'],"'.<br>\n";
+            }
             if (($GBpagination>0)&&(count($AdminEntries)>$GBpagination)) {
                 $Entries=array_reverse($AdminEntries);
                 if ($_GET['page']) switch ($_GET['page']) {

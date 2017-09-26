@@ -1,6 +1,6 @@
 <?php
 /**
- * Main program file of PHPCSV Guestbook version 0.94
+ * Main program file of PHPCSV Guestbook
  * See settings.php for configuration.
  * Edit page.php for change appearance.
  * See license.txt for licensing information.
@@ -77,14 +77,50 @@ function AddEntryView() {
     }
 }
 
+function Search($SearchQuery) {
+    $Entries=ReadEntries();
+    $SearchResultCount=0;
+    $SearchResult=false;
+    foreach($Entries as $e=>$Entry) {
+        for($p=0; $p<7; $p++) {
+            if (mb_stristr($Entry[$p],$SearchQuery)) {
+                $SearchResult[$SearchResultCount][0]=$e;
+                $SearchResult[$SearchResultCount][1]=$Entry;
+                $SearchResultCount++;
+                break;
+            }
+        }
+    }
+    return $SearchResult;
+}
+
+function AddSearchBar() {
+    global $Titles;
+    global $GBsearch;
+    if ($GBsearch) {
+        echo "<form action=index.php method=post>";
+        echo "<input type=text name=\"serachq\" value=\"\" maxlength=255>";
+        echo "<input type=submit name=\"search\" value=\"$Titles[Search]\">";
+        echo "</form>";
+    }
+}
+
 function EntriesView() {
     global $Titles;
     global $DataStatus;
     global $Entries;
     global $GBpagination;
     if ($DataStatus=="empty") echo "$Titles[EmptyFile]";
-        else if (($GBpagination>0)&&(count($Entries)>$GBpagination)) {
-            $Entries=array_reverse($Entries);
+        else if($_POST['search']&&$_POST['serachq']) {
+            $SearchResult=Search($_POST['serachq']);
+            if ($SearchResult) {
+                $GBpagination=0;
+                unset($Entries);
+                foreach($SearchResult as $n=>$Entry) $Entries[$n]=$Entry[1];
+            } else echo "$Titles[NoResult]: '",$_POST['serachq'],"'.<br>\n";
+        }
+        if (($GBpagination>0)&&(count($Entries)>$GBpagination)) {
+        $Entries=array_reverse($Entries);
             if ($_GET['page']) switch ($_GET['page']) {
                 case $Titles[First]:
                     $CurrentPage=0;
@@ -100,7 +136,7 @@ function EntriesView() {
                     break;
                 default:
                     $CurrentPage=$_GET['page']-1;
-            } 
+            }
                 else $CurrentPage=0;
             for ($e = ($GBpagination*$CurrentPage); $e < ($GBpagination*($CurrentPage+1)); $e++) {
                 if ($e>=count($Entries)) break;

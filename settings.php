@@ -1,6 +1,6 @@
 <?php
 /**
- * Settings file of PHPCSV Guestbook version 0.94
+ * Settings file of PHPCSV Guestbook
  * Edit page.php for change appearance.
  * $GBdata parameter for changing entries data file.
  * Please, change $GBadmin and $GBpassword parameters for access to administration page.
@@ -11,6 +11,7 @@ $GBdata="gbdb.csv";
 $GBadmin="root";
 $GBpassword="password";
 $GBpagination=10; // pagination for entries, 0 - disabled
+$GBsearch=true; // enable or disable search bar
 $GBnotificationmailto=""; // leave empty if you don't want send notification
 $GBnotificationmailfrom="";
 $Titles[HeadTitle]="Guestbook";
@@ -56,4 +57,6 @@ $Titles[First]="First";
 $Titles[Last]="Last";
 $Titles[Previous]="<<";
 $Titles[Next]=">>";
+$Titles[Search]="Search";
+$Titles[NoResult]="No search result";
 ?>
