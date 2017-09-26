@@ -105,7 +105,7 @@ function EntriesView() {
             for ($e = ($GBpagination*$CurrentPage); $e < ($GBpagination*($CurrentPage+1)); $e++) {
                 if ($e>=count($Entries)) break;
                 echo "  <div class=\"entry\"><div class=\"messages_header\"><h4>",$Entries[$e][7],". ";
-                if ($Entries[$e][2]) echo "<a href=\"$Entries[$e][2]\">";
+                if ($Entries[$e][2]) echo "<a href=\"",$Entries[$e][2],"\">";
                 echo "<b>",$Entries[$e][0],"</b>";
                 if ($Entries[$e][2]) echo "</a>";
                 if ($Entries[$e][1]) echo " ",$Titles[From]," <b>",$Entries[$e][1],"</b>";
