@@ -55,6 +55,7 @@ function AddEntryView() {
     global $Titles;
     global $Values;
     global $PageStatus;
+    global $GBcaptcha;
     echo "<h2>",$Titles[Page],"</h2><br>\n";
     if ($PageStatus=="added") echo "$Titles[Added]"; else {
         $captchanumber11=rand(1, 4);
@@ -68,7 +69,7 @@ function AddEntryView() {
         echo "  $Titles[Link]: <input type=text name=\"link\" value=\"",$Values["link"],"\" maxlength=255><br>\n";
         echo "  $Titles[Email]: <input type=text name=\"email\" value=\"",$Values["email"],"\" maxlength=255> ($Titles[NotPublic])<br>\n";
         echo "  $Titles[Text]:<br>\n  <textarea name=\"text\" wrap=virtual cols=50 rows=5  maxlength=7168>",$Values["text"],"</textarea><br>\n";
-        echo "  $Titles[Captcha]: <font class=\"text\">$captchanumber11</font><font>$captchanumber11</font><font>$captchanumber12</font> $Titles[CaptchaPlus] <font>$captchanumber21</font><font>$captchanumber22</font><font class=\"text\">$captchanumber21</font> = <input type=text name=\"captcha\" size=2 maxlength=2> ?<br>\n";
+        if ($GBcaptcha) echo "  $Titles[Captcha]: <font class=\"text\">$captchanumber11</font><font>$captchanumber11</font><font>$captchanumber12</font> $Titles[CaptchaPlus] <font>$captchanumber21</font><font>$captchanumber22</font><font class=\"text\">$captchanumber21</font> = <input type=text name=\"captcha\" size=2 maxlength=2> ?<br>\n";
         echo "  <input type=submit name=\"submit\" value=\"$Titles[Submit]\">\n";
         echo "</form>\n";
         if ($PageStatus=="emptyname") echo "$Titles[EmptyName]<br>\n";
@@ -120,13 +121,13 @@ function EntriesView() {
             } else echo "$Titles[NoResult]: '",$_POST['serachq'],"'.<br>\n";
         }
         if (($GBpagination>0)&&(count($Entries)>$GBpagination)) {
-        $Entries=array_reverse($Entries);
+            $Entries=array_reverse($Entries);
             if ($_GET['page']) switch ($_GET['page']) {
                 case $Titles[First]:
                     $CurrentPage=0;
                     break;
                 case $Titles[Last]:
-                    $CurrentPage=intdiv(count($Entries),$GBpagination);
+                    $CurrentPage=intdiv((count($Entries)-1),$GBpagination);
                     break;
                 case "$Titles[Previous]":
                     $CurrentPage=$_SESSION['currentpage']-1;
@@ -151,7 +152,7 @@ function EntriesView() {
                 if ($Entries[$e][6]) echo nl2br($Entries[$e][6]),"</i><br>\n";
                 echo "</div><hr>\n";
             }
-            echo "<form action=\".\" method=\"get\">\n";
+            echo "<form action=index.php method=\"get\">\n";
             if ($CurrentPage>0) {
                 echo "    <input type=\"submit\" value=\"$Titles[First]\" name=\"page\"/>\n";
                 echo "    <input type=\"submit\" value=\"$Titles[Previous]\" name=\"page\"/>\n";
@@ -194,7 +195,10 @@ if($_POST['submit']) {
         if ($_POST["captcha"]&&(md5(base64_encode($_POST["captcha"]))==$_SESSION["captcha"])) {
             AddEntry();
             if ($GBnotificationmailto) SendMail();
-        } else $PageStatus="wrongcaptcha";
+        } else if (!$GBcaptcha) {
+                AddEntry();
+                if ($GBnotificationmailto) SendMail();
+            } else $PageStatus="wrongcaptcha";
     if (($PageStatus)&&!($PageStatus=="added")) {
         $SESSION["value"]["name"]=$_POST['name'];
         $SESSION["value"]["from"]=$_POST['from'];

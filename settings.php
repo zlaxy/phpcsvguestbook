@@ -12,6 +12,7 @@ $GBadmin="root";
 $GBpassword="password";
 $GBpagination=10; // pagination for entries, 0 - disabled
 $GBsearch=true; // enable or disable search bar
+$GBcaptcha=true; // enable or disable captcha
 $GBnotificationmailto=""; // leave empty if you don't want send notification
 $GBnotificationmailfrom="";
 $Titles[HeadTitle]="Guestbook";
