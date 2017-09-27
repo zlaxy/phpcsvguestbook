@@ -1,5 +1,5 @@
 /**
- * anthrstlsht.css (another style sheet) v0.8
+ * anthrstlsht.css (another style sheet) v0.81-phpcsvguestbook
  * https://github.com/zlaxy/anthrstlsht
  * DWTWL 2.5 license: https://soundragon.su/license/license.html
  * fonts connection: http://font.ubuntu.com/web/ , for example:
@@ -69,6 +69,18 @@ p {
 
 img {
   border: 0;
+}
+
+.btn-link{
+  border:none;
+  outline:none;
+  background:none;
+  cursor:pointer;
+  color:#0000EE;
+  padding:0;
+  text-decoration:underline;
+  font-family:inherit;
+  font-size:inherit;
 }
 
 .button,

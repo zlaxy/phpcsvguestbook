@@ -56,6 +56,7 @@ function AddEntryView() {
     global $Values;
     global $PageStatus;
     global $GBcaptcha;
+    global $GBtextlenght;
     echo "<h2>",$Titles[Page],"</h2><br>\n";
     if ($PageStatus=="added") echo "$Titles[Added]"; else {
         $captchanumber11=rand(1, 4);
@@ -68,7 +69,7 @@ function AddEntryView() {
         echo "  $Titles[City]: <input type=text name=\"from\" value=\"",$Values["from"],"\" maxlength=255><br>\n";
         echo "  $Titles[Link]: <input type=text name=\"link\" value=\"",$Values["link"],"\" maxlength=255><br>\n";
         echo "  $Titles[Email]: <input type=text name=\"email\" value=\"",$Values["email"],"\" maxlength=255> ($Titles[NotPublic])<br>\n";
-        echo "  $Titles[Text]:<br>\n  <textarea name=\"text\" wrap=virtual cols=50 rows=5  maxlength=7168>",$Values["text"],"</textarea><br>\n";
+        echo "  $Titles[Text]:<br>\n  <textarea name=\"text\" wrap=virtual cols=50 rows=5  maxlength=$GBtextlenght>",$Values["text"],"</textarea><br>\n";
         if ($GBcaptcha) echo "  $Titles[Captcha]: <font class=\"text\">$captchanumber11</font><font>$captchanumber11</font><font>$captchanumber12</font> $Titles[CaptchaPlus] <font>$captchanumber21</font><font>$captchanumber22</font><font class=\"text\">$captchanumber21</font> = <input type=text name=\"captcha\" size=2 maxlength=2> ?<br>\n";
         echo "  <input type=submit name=\"submit\" value=\"$Titles[Submit]\">\n";
         echo "</form>\n";
@@ -111,6 +112,7 @@ function EntriesView() {
     global $DataStatus;
     global $Entries;
     global $GBpagination;
+    global $GBreadmore;
     if ($DataStatus=="empty") echo "$Titles[EmptyFile]";
         else if($_POST['search']&&$_POST['serachq']) {
             $SearchResult=Search($_POST['serachq']);
@@ -147,7 +149,18 @@ function EntriesView() {
                 if ($Entries[$e][2]) echo "</a>";
                 if ($Entries[$e][1]) echo " ",$Titles[From]," <b>",$Entries[$e][1],"</b>";
                 echo ", ",date("j.m.Y, H:i",$Entries[$e][5]),", ",$Titles[Wrote],":</div></h4><br>\n";
-                echo "  ",nl2br($Entries[$e][4]),"<br>\n";
+                if ($GBreadmore>0) {
+                    $Message=strip_tags($Entries[$e][4]);
+                    if (strlen($Message)>$GBreadmore) {
+                        $readmorenumber="readmore".$Entries[$e][7];
+                        if ($_POST[$readmorenumber]) echo "  ",nl2br($Entries[$e][4]),"<br>\n";
+                            else {
+                                $Message = substr($Message, 0, $GBreadmore);
+                                $Message = substr($Message, 0, strrpos($Message, ' '))."... <form action=\"\" method=\"post\"><button type=\"submit\" name=\"readmore".$Entries[$e][7]."\" value=\"read\" class=\"btn-link\">".$Titles[ReadMore]."</button></form>";
+                                echo "  ",nl2br($Message),"<br>\n";
+                            }
+                    } else echo "  ",nl2br($Entries[$e][4]),"<br>\n";
+                } else echo "  ",nl2br($Entries[$e][4]),"<br>\n";
                 if ($Entries[$e][6]) echo "<br><i><b>$Titles[Response]:</b><br>\n";
                 if ($Entries[$e][6]) echo nl2br($Entries[$e][6]),"</i><br>\n";
                 echo "</div><hr>\n";
@@ -180,7 +193,18 @@ function EntriesView() {
                 if ($Entry[2]) echo "</a>";
                 if ($Entry[1]) echo " ",$Titles[From]," <b>",$Entry[1],"</b>";
                 echo ", ",date("j.m.Y, H:i",$Entry[5]),", ",$Titles[Wrote],":</div></h4><br>\n";
-                echo "  ",nl2br($Entry[4]),"<br>\n";
+                if (($GBreadmore>0)&&(!$SearchResult)) {
+                    $Message=strip_tags($Entries[$e][4]);
+                    if (strlen($Message)>$GBreadmore) {
+                        $readmorenumber="readmore".$Entries[$e][7];
+                        if ($_POST[$readmorenumber]) echo "  ",nl2br($Entries[$e][4]),"<br>\n";
+                            else {
+                                $Message = substr($Message, 0, $GBreadmore);
+                                $Message = substr($Message, 0, strrpos($Message, ' '))."... <form action=\"\" method=\"post\"><button type=\"submit\" name=\"readmore".$Entries[$e][7]."\" value=\"read\" class=\"btn-link\">".$Titles[ReadMore]."</button></form>";
+                                echo "  ",nl2br($Message),"<br>\n";
+                            }
+                    } else echo "  ",nl2br($Entries[$e][4]),"<br>\n";
+                } else echo "  ",nl2br($Entries[$e][4]),"<br>\n";
                 if ($Entry[6]) echo "<br><i><b>$Titles[Response]:</b><br>\n";
                 if ($Entry[6]) echo nl2br($Entry[6]),"</i><br>\n";
                 echo "</div><hr>\n";
