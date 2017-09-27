@@ -79,6 +79,7 @@ function AdminEntriesView() {
     global $GBpassword;
     global $AdminEntries;
     global $GBpagination;
+    global $GBtextlenght;
     if ($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))) if ($DataStatus=="empty") echo "$Titles[EmptyFile]\n";
         else if ($_SESSION["DeleteStatus"]=="deletion") {
             echo "  $Titles[AdminSureDel] ",count($_SESSION["DeleteEntries"])," $Titles[AdminSureDelMessages]?\n";
@@ -93,8 +94,8 @@ function AdminEntriesView() {
             echo "  $Titles[City] <input type=text name=\"editfrom\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][1],"\" maxlength=255><br>\n";
             echo "  $Titles[Link] <input type=text name=\"editlink\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][2],"\" maxlength=255><br>\n";
             echo "  $Titles[Email] <input type=text name=\"editmail\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][3],"\" maxlength=255><br>\n";
-            echo "  $Titles[AdminMessage]:<br>\n  <textarea name=\"edittext\" wrap=virtual cols=50 rows=5  maxlength=7168>",$AdminEntries[($_SESSION["EditStatus"]-1)][4],"</textarea><br>\n";
-            echo "  $Titles[Response]:<br>\n  <textarea name=\"editresp\" wrap=virtual cols=50 rows=5  maxlength=7168>",$AdminEntries[($_SESSION["EditStatus"]-1)][6],"</textarea><br>\n";
+            echo "  $Titles[AdminMessage]:<br>\n  <textarea name=\"edittext\" wrap=virtual cols=50 rows=5  maxlength=$GBtextlenght>",$AdminEntries[($_SESSION["EditStatus"]-1)][4],"</textarea><br>\n";
+            echo "  $Titles[Response]:<br>\n  <textarea name=\"editresp\" wrap=virtual cols=50 rows=5  maxlength=$GBtextlenght>",$AdminEntries[($_SESSION["EditStatus"]-1)][6],"</textarea><br>\n";
             echo "  <input type=submit name=\"submiteedit\" value=\"$Titles[AdminApply]\"> ";
             echo "<input type=submit name=\"applydelete\" value=\"$Titles[AdminDelete]\"> ";
             echo "<input type=submit name=\"canceledit\" value=\"$Titles[AdminCancel]\">\n";
