@@ -1,4 +1,4 @@
-PHPCSV Guestbook version 0.96
+PHPCSV Guestbook version 0.97
 
 Simple php guestbook with csv file data storage.
 
@@ -15,7 +15,7 @@ Archive: https://github.com/zlaxy/phpcsvguestbook/archive/master.zip
 
 2. Edit settings.php: change $GBadmin and $GBpassword (and other variables if necessary)
 
-3. Check privileges for access to files: data storage (default: gbdb.csv) must have write permissions. Other files need only read rights.
+3. Check privileges for access to files: data storage (default: gbdb.csv) must have write permissions. If you enabled upload feature, 'upload' directory must have rwx permissions. Other files need only read rights.
 
 Using:
 

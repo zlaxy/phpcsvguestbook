@@ -14,6 +14,8 @@ $GBpagination=10; // pagination for entries, 0 - disabled
 $GBreadmore=255; // number of symbols for 'Read More' feature, 0 - shows full entries
 $GBsearch=true; // enable or disable search bar
 $GBcaptcha=true; // enable or disable captcha
+$GBupload=true; // enable or disable upload image feature
+$GBimagesize=1048576; // maximum image size
 $GBnotificationmailto=""; // leave empty if you don't want send notification
 $GBnotificationmailfrom="";
 $GBtextlenght=7168; // maximum size of entry text
@@ -63,4 +65,6 @@ $Titles[Next]=">>";
 $Titles[Search]="Search";
 $Titles[NoResult]="No search result";
 $Titles[ReadMore]="Read more";
+$Titles[FileUpload]="Upload image:";
+$Titles[WrongImage]="Can't upload image.";
 ?>
