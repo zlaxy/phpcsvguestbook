@@ -19,6 +19,16 @@ $GBimagesize=1048576; // maximum image size
 $GBnotificationmailto=""; // leave empty if you don't want send notification
 $GBnotificationmailfrom="";
 $GBtextlenght=7168; // maximum size of entry text
+$GBcityfield=false; // enable or disable 'City' field
+$GBlinkfield=false; // enable or disable 'Homepage' field
+$GBsubjectfield=true; // enable or disable 'Subject' field
+$GBcategoryfield=array(
+    0=>"Public",          // Array of categories, if you want to disable
+    1=>"Help",            // 'Category' field, just leave
+    2=>"Special",         // '$GBcategoryfield=false' string
+    3=>"Suppot",
+    4=>"Order",
+    5=>"Other");
 $Titles[HeadTitle]="Guestbook";
 $Titles[Page]="Guestbook";
 $Titles[Name]="Your name";
@@ -67,4 +77,7 @@ $Titles[NoResult]="No search result";
 $Titles[ReadMore]="Read more";
 $Titles[FileUpload]="Upload image:";
 $Titles[WrongImage]="Can't upload image.";
+$Titles[Subject]="Subject";
+$Titles[Category]="Category";
+$Titles[About]="about";
 ?>

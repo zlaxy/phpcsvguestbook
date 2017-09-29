@@ -13,7 +13,7 @@ function ReadEntries() {
     $fhandle=fopen($GBdata,"r") or $DataStatus="empty";
     for($e=0; $entrydata=fgetcsv($fhandle, 16384, ","); $e++) {
         $Entries["$e"]=$entrydata;
-        $Entries["$e"][7]=$e+1;
+        $Entries["$e"][10]=$e+1;
     } fclose($fhandle);
     if (!$Entries[0]) $DataStatus="empty";
     return $Entries;
@@ -24,7 +24,7 @@ function SaveEntries() {
     global $AdminEntries;
     $fhandle=fopen($GBdata,"w");
     foreach($AdminEntries as $e=>$Entry) {
-        unset($Entry[7]);
+        unset($Entry[10]);
         fputcsv($fhandle,$Entry);
     }
     fclose($fhandle);
@@ -35,7 +35,7 @@ function Search($SearchQuery) {
     $SearchResultCount=0;
     $SearchResult=false;
     foreach($Entries as $e=>$Entry) {
-        for($p=0; $p<7; $p++) {
+        for($p=0; $p<9; $p++) {
             if (mb_stristr($Entry[$p],$SearchQuery)) {
                 $SearchResult[$SearchResultCount][0]=$e;
                 $SearchResult[$SearchResultCount][1]=$Entry;
@@ -72,6 +72,20 @@ function AdminHeaderView() {
     }
 }
 
+function SingleEntry($Entry) {
+    global $Titles;
+    global $GBcityfield;
+    global $GBlinkfield;
+    global $GBsubjectfield;
+    global $GBcategoryfield;
+    echo "  <tr><td>",($Entry[10]),"<input type=checkbox name=\"cb",($Entry[10]-1),"\" value=\"checked\"></td><td>$Entry[0]</td>";
+    if ($GBcityfield) echo "<td>$Entry[1]</td>";
+    if ($HBlinkfield) echo "<td>$Entry[2]</td>";
+    if ($GBsubjectfield) echo "<td>$Entry[7]</td>";
+    if ($GBcategoryfield) echo "<td>$Entry[8]</td>";
+    echo "<td>$Entry[3]</td><td>",nl2br($Entry[4]),"</td><td>",nl2br($Entry[6]),"</td><td>",date("j.m.Y, H:i",$Entry[5]),"</td><td><input type=submit name=\"submit",($Entry[10]-1),"\" value=\"$Titles[AdminEdit]\"></td></tr>\n";
+}
+
 function AdminEntriesView() {
     global $Titles;
     global $DataStatus;
@@ -80,6 +94,10 @@ function AdminEntriesView() {
     global $AdminEntries;
     global $GBpagination;
     global $GBtextlenght;
+    global $GBcityfield;
+    global $GBlinkfield;
+    global $GBsubjectfield;
+    global $GBcategoryfield;
     if ($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))) if ($DataStatus=="empty") echo "$Titles[EmptyFile]\n";
         else if ($_SESSION["DeleteStatus"]=="deletion") {
             echo "  $Titles[AdminSureDel] ",count($_SESSION["DeleteEntries"])," $Titles[AdminSureDelMessages]?\n";
@@ -91,9 +109,19 @@ function AdminEntriesView() {
             echo "  $Titles[AdminMessage] ", ($_SESSION["EditStatus"]),", ",date("j.m.Y, H:i",$AdminEntries[($_SESSION["EditStatus"]-1)][5]),":<br>\n";
             echo "<form action=administration.php method=post>\n";
             echo "  $Titles[AdminName]: <input type=text name=\"editname\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][0],"\" maxlength=255><br>\n";
-            echo "  $Titles[City] <input type=text name=\"editfrom\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][1],"\" maxlength=255><br>\n";
-            echo "  $Titles[Link] <input type=text name=\"editlink\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][2],"\" maxlength=255><br>\n";
+            if ($GBcityfield) echo "  $Titles[City] <input type=text name=\"editfrom\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][1],"\" maxlength=255><br>\n";
+            if ($GBlinkfield) echo "  $Titles[Link] <input type=text name=\"editlink\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][2],"\" maxlength=255><br>\n";
             echo "  $Titles[Email] <input type=text name=\"editmail\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][3],"\" maxlength=255><br>\n";
+            if ($GBsubjectfield) echo "  $Titles[Subject] <input type=text name=\"editsubj\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][7],"\" maxlength=255><br>\n";
+            if ($GBcategoryfield) {
+                echo "  $Titles[Category] <select name=\"editcategory\">";
+                foreach($GBcategoryfield as $Category) {
+                    echo "    <option value=\"$Category\"";
+                    if ($AdminEntries[($_SESSION["EditStatus"]-1)][8]==$Category) echo " selected=\"selected\"";
+                echo ">$Category</option>";
+                }
+                echo "</select><br>\n";
+            }
             echo "  $Titles[AdminMessage]:<br>\n  <textarea name=\"edittext\" wrap=virtual cols=50 rows=5  maxlength=$GBtextlenght>",$AdminEntries[($_SESSION["EditStatus"]-1)][4],"</textarea><br>\n";
             echo "  $Titles[Response]:<br>\n  <textarea name=\"editresp\" wrap=virtual cols=50 rows=5  maxlength=$GBtextlenght>",$AdminEntries[($_SESSION["EditStatus"]-1)][6],"</textarea><br>\n";
             echo "  <input type=submit name=\"submiteedit\" value=\"$Titles[AdminApply]\"> ";
@@ -146,18 +174,28 @@ function AdminEntriesView() {
                 }
                 echo "</form>\n";
                 echo "<form action=administration.php method=post>\n";
-                echo "<table border=1  width=\"100%\">\n  <tr><th></th><th>$Titles[AdminName]</th><th>$Titles[City]</th><th>$Titles[Link]</th><th>$Titles[Email]</th><th>$Titles[AdminMessage]</th><th>$Titles[Response]</th><th>$Titles[AdminDate]</th><th></th></tr>\n";
+                echo "<table border=1  width=\"100%\">\n  <tr><th></th><th>$Titles[AdminName]</th>";
+                if ($GBcityfield) echo "<th>$Titles[City]</th>";
+                if ($HBlinkfield) echo "<th>$Titles[Link]</th>";
+                if ($GBsubjectfield) echo "<th>$Titles[Subject]</th>";
+                if ($GBcategoryfield) echo "<th>$Titles[Category]</th>";
+                echo "<th>$Titles[Email]</th><th>$Titles[AdminMessage]</th><th>$Titles[Response]</th><th>$Titles[AdminDate]</th><th></th></tr>\n";
                 for ($e = ($GBpagination*$CurrentPage); $e < ($GBpagination*($CurrentPage+1)); $e++) {
                     if ($e>=count($Entries)) break;
                     $Entry = $Entries[$e];
-                    echo "  <tr><td>",($Entry[7]),"<input type=checkbox name=\"cb",($Entry[7]-1),"\" value=\"checked\"></td><td>$Entry[0]</td><td>$Entry[1]</td><td>$Entry[2]</td><td>$Entry[3]</td><td>",nl2br($Entry[4]),"</td><td>",nl2br($Entry[6]),"</td><td>",date("j.m.Y, H:i",$Entry[5]),"</td><td><input type=submit name=\"submit",($Entry[7]-1),"\" value=\"$Titles[AdminEdit]\"></td></tr>\n";
+                    SingleEntry($Entry);
                 }
                 $_SESSION['currentpage']=$CurrentPage;
             } else {
                 echo "<form action=administration.php method=post>\n";
-                echo "<table border=1  width=\"100%\">\n  <tr><th></th><th>$Titles[AdminName]</th><th>$Titles[City]</th><th>$Titles[Link]</th><th>$Titles[Email]</th><th>$Titles[AdminMessage]</th><th>$Titles[Response]</th><th>$Titles[AdminDate]</th><th></th></tr>\n";
+                echo "<table border=1  width=\"100%\">\n  <tr><th></th><th>$Titles[AdminName]</th>";
+                if ($GBcityfield) echo "<th>$Titles[City]</th>";
+                if ($HBlinkfield) echo "<th>$Titles[Link]</th>";
+                if ($GBsubjectfield) echo "<th>$Titles[Subject]</th>";
+                if ($GBcategoryfield) echo "<th>$Titles[Category]</th>";
+                echo "<th>$Titles[Email]</th><th>$Titles[AdminMessage]</th><th>$Titles[Response]</th><th>$Titles[AdminDate]</th><th></th></tr>\n";
                 $Entries=array_reverse($AdminEntries);
-                foreach($Entries as $e=>$Entry) echo "  <tr><td>",($Entry[7]),"<input type=checkbox name=\"cb",($Entry[7]-1),"\" value=\"checked\"></td><td>$Entry[0]</td><td>$Entry[1]</td><td>$Entry[2]</td><td>$Entry[3]</td><td>",nl2br($Entry[4]),"</td><td>",nl2br($Entry[6]),"</td><td>",date("j.m.Y, H:i",$Entry[5]),"</td><td><input type=submit name=\"submit",($Entry[7]-1),"\" value=\"$Titles[AdminEdit]\"></td></tr>\n";
+                foreach($Entries as $e=>$Entry) SingleEntry($Entry);
             }
             echo "</table>\n";
             echo "  <input type=submit name=\"submitdelete\" value=\"$Titles[AdminDeleteChecked]\">\n";
@@ -192,6 +230,8 @@ if ($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))) {
         $AdminEntries[($_SESSION["EditStatus"]-1)][3]=$_POST["editmail"];
         $AdminEntries[($_SESSION["EditStatus"]-1)][4]=$_POST["edittext"];
         $AdminEntries[($_SESSION["EditStatus"]-1)][6]=$_POST["editresp"];
+        $AdminEntries[($_SESSION["EditStatus"]-1)][7]=$_POST["editsubj"];
+        $AdminEntries[($_SESSION["EditStatus"]-1)][8]=$_POST["editcategory"];
         SaveEntries();
         Unset($_SESSION["EditStatus"]);
         $AdminEntries=ReadEntries();
