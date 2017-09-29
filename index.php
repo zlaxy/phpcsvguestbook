@@ -70,16 +70,29 @@ function AddEntry() {
     global $GBlinkfield;
     global $GBsubjectfield;
     global $GBcategoryfield;
-    $NewEntry[name]=$_POST['name'];
-    if ($GBcityfield) $NewEntry[from]=$_POST['from']; else $NewEntry[from]="";
-    if ($GBlinkfield) $NewEntry[link]=$_POST['link']; else $NewEntry[link]="";
+    global $GBstriptags;
+    if (!$GBstriptags) $NewEntry[name]=$_POST['name'];
+        else $NewEntry[name]=strip_tags($_POST['name']);
+    if ($GBcityfield) {
+        if (!$GBstriptags) $NewEntry[from]=$_POST['from'];
+            else $NewEntry[from]=strip_tags($_POST['from']);
+        } else $NewEntry[from]="";
+    if ($GBlinkfield) {
+        if (!$GBstriptags) $NewEntry[link]=$_POST['link'];
+            else $NewEntry[link]=strip_tags($_POST['link']);
+        } else $NewEntry[link]="";
     $NewEntry[email]=$_POST['email'];
-    if ($UploadedFile) $NewEntry[text]=$_POST['text']." <br><img src=\"$UploadedFile\">";
-        else $NewEntry[text]=$_POST['text'];
+    if (!$GBstriptags) $NewEntry[text]=$_POST['text'];
+        else $NewEntry[text]=strip_tags($_POST['text']);
+    if ($UploadedFile) $NewEntry[text]=$NewEntry[text]." <br><img src=\"$UploadedFile\">";
     $NewEntry[datetime]=time();
     $NewEntry[response]="";
-    if ($GBsubjectfield) $NewEntry[subj]=$_POST['subj']; else $NewEntry[subj]="";
-    if ($GBcategoryfield) $NewEntry[category]=$_POST['category']; else $NewEntry[category]="";
+    if ($GBsubjectfield) {
+        if (!$GBstriptags) $NewEntry[subj]=$_POST['subj'];
+            else $NewEntry[subj]=strip_tags($_POST['subj']);
+        } else $NewEntry[subj]="";
+    if ($GBcategoryfield) $NewEntry[category]=strip_tags($_POST['category']);
+        else $NewEntry[category]="";
     $NewEntry[parameters]="";
     $fhandle=fopen($GBdata,"a");
     fputcsv($fhandle,$NewEntry);

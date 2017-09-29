@@ -30,6 +30,7 @@ $GBcategoryfield=array(
     3=>"Suppot",
     4=>"Order",
     5=>"Other");
+$GBstriptags=true; // включение или отключение функции обрезания тегов при добавлении новой записи
 $Titles[HeadTitle]="Гостевая книга";
 $Titles[Page]="Гостевая книга";
 $Titles[Name]="Ваше имя";
