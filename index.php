@@ -235,7 +235,7 @@ function EntriesView() {
                     $CurrentPage=0;
                     break;
                 case $Titles[Last]:
-                    $CurrentPage=intdiv((count($Entries)-1),$GBpagination);
+                    $CurrentPage=(int)((count($Entries)-1)/$GBpagination);
                     break;
                 case "$Titles[Previous]":
                     $CurrentPage=$_SESSION['currentpage']-1;
