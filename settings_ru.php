@@ -31,6 +31,8 @@ $GBcategoryfield=array(
     4=>"Order",
     5=>"Other");
 $GBstriptags=true; // включение или отключение функции обрезания тегов при добавлении новой записи
+$GBreplies=true; // включение или отключение ответов на сообщения
+$GBshownumbers=true; // показывать или не показывать номера сообщений (если включены ответы - номера сообщений не будут показываться)
 $Titles["HeadTitle"]="Гостевая книга";
 $Titles["Page"]="Гостевая книга";
 $Titles["Name"]="Ваше имя";
@@ -82,4 +84,7 @@ $Titles["WrongImage"]="Не могу загрузить изображение."
 $Titles["Subject"]="Тема";
 $Titles["Category"]="Категория";
 $Titles["About"]="о";
+$Titles["Reply"]="Ответить";
+$Titles["Replied"]="ответил";
+$Titles["Replying"]="Ответ на это сообщение:";
 ?>

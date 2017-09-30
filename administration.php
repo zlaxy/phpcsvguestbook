@@ -223,7 +223,7 @@ if ($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))) {
     if (isset($_POST["submitdelete"])) {
         $_SESSION["DeleteStatus"]="deletion";
         foreach($AdminEntries as $e=>$Entry) if (isset($_POST["cb$e"])) $_SESSION["DeleteEntries"][]=$e;
-        if (!count($_SESSION["DeleteEntries"])) $_SESSION["DeleteStatus"]="";
+        if (isset($_SESSION["DeleteEntries"])) if (!count($_SESSION["DeleteEntries"])) $_SESSION["DeleteStatus"]="";
     } if (isset($_POST["submiteedit"])) if (($_POST["submiteedit"])&&($_SESSION["EditStatus"])) {
         $AdminEntries[($_SESSION["EditStatus"]-1)][0]=$_POST["editname"];
         if (isset($_POST["editfrom"])) $AdminEntries[($_SESSION["EditStatus"]-1)][1]=$_POST["editfrom"];

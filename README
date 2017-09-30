@@ -1,4 +1,4 @@
-PHPCSV Guestbook version 0.98
+PHPCSV Guestbook version 0.99
 
 Simple php guestbook with csv file data storage.
 
@@ -10,6 +10,7 @@ Features:
   - 'Read More' button
   - Pagination
   - Categories
+  - Replies
 
 Working example: https://zlaxyi.soundragon.su/gb
 

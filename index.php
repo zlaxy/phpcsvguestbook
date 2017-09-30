@@ -93,7 +93,10 @@ function AddEntry() {
         } else $NewEntry["subj"]="";
     if ($GBcategoryfield) $NewEntry["category"]=strip_tags($_POST["category"]);
         else $NewEntry["category"]="";
-    $NewEntry["parameters"]="";
+    if (isset($_SESSION["reply"])) {
+        $NewEntry["reply"]=$_SESSION["reply"][5];
+        unset($_SESSION["reply"]);
+    }
     $fhandle=fopen($GBdata,"a");
     fputcsv($fhandle,$NewEntry);
     fclose($fhandle);
@@ -178,17 +181,26 @@ function AddSearchBar() {
 
 function SinlgeEntry($Entry) {
     global $Titles;
+    global $GBreplies;
     global $GBreadmore;
     global $GBcityfield;
     global $GBlinkfield;
     global $GBsubjectfield;
     global $GBcategoryfield;
-    echo "  <div class=\"entry\"><div class=\"messages_header\"><h4>",$Entry[10],". ";
+    global $GBshownumbers;
+    global $GBreplies;
+    echo "  ";
+    if ($GBreplies&&isset($Entry[9])&&$Entry[9]) echo "<div class=\"reply\">";
+    echo "<div class=\"entry\"><div class=\"messages_header\"><h4>";
+    if ($GBshownumbers) echo $Entry[10],". ";
     if ($Entry[2]) echo "<a href=\"",$Entry[2],"\">";
     echo "<b>",$Entry[0],"</b>";
     if ($Entry[2]) echo "</a>";
     if ($Entry[1]) echo " ",$Titles["From"]," <b>",$Entry[1],"</b>";
-    echo ", ",date("j.m.Y, H:i",$Entry[5]),", ",$Titles["Wrote"];
+    echo ", ",date("j.m.Y, H:i",$Entry[5]),", ";
+    if ($GBreplies&&isset($Entry[9])&&$Entry[9]) {
+        echo $Titles["Replied"];
+    } else echo $Titles["Wrote"];
     if (($GBsubjectfield)&&($Entry[7])) echo " ",$Titles["About"]," '",$Entry[7],"'";
     if (($GBcategoryfield)&&($Entry[8])) echo " [",$Entry[8],"]";
     echo ":</div></h4><br>\n";
@@ -206,7 +218,14 @@ function SinlgeEntry($Entry) {
     } else echo "  ",nl2br($Entry[4]),"<br>\n";
     if ($Entry[6]) echo "<br><i><b>",$Titles["Response"],":</b><br>\n";
     if ($Entry[6]) echo nl2br($Entry[6]),"</i><br>\n";
-    echo "</div><hr>\n";
+    if ($GBreplies) {
+        echo "<form action=index.php method=post>";
+        echo "<p align=\"right\"><button type=submit name=\"reply\" value=\"",$Entry[10],"\">",$Titles["Reply"],"</button></p>";
+        echo "</form>";
+    }
+    echo "</div>";
+    if ($GBreplies&&isset($Entry[9])&&$Entry[9]) echo "</div>";
+    echo "<hr>\n";
 }
 
 function EntriesView() {
@@ -219,6 +238,26 @@ function EntriesView() {
     global $GBlinkfield;
     global $GBsubjectfield;
     global $GBcategoryfield;
+    global $GBreplies;
+    if (isset($_SESSION["reply"])) {
+        echo $Titles["Replying"],"<br>\n";
+    }
+    if ($GBreplies) {
+        $EntriesReplySorted=$Entries;
+        foreach($Entries as $Entry) {
+            if (isset($Entry[9])) {
+                foreach($EntriesReplySorted as $n=>$EntrySort) if ($EntrySort[5]==$Entry[5]) {
+                    $a=$n;
+                }
+                foreach($EntriesReplySorted as $n=>$EntrySort) if ($EntrySort[5]==$Entry[9]) $b=$n;
+                if (isset($b)) {
+                    $out=array_splice($EntriesReplySorted, $a, 1);
+                    array_splice($EntriesReplySorted, $b, 0, $out);
+                }
+            }
+        }
+        $Entries=$EntriesReplySorted;
+    }
     if ($DataStatus=="empty") echo $Titles["EmptyFile"];
         else if(isset($_POST["search"])&&isset($_POST["serachq"])) {
             $SearchResult=Search($_POST["serachq"]);
@@ -278,6 +317,8 @@ function EntriesView() {
         }
 }
 
+if ($GBreplies) $GBshownumbers=false;
+
 if(isset($_POST["submit"])) {
     if (!$_POST["text"]) $PageStatus="emptytext";
     if (!$_POST["name"]) $PageStatus="emptyname";
@@ -302,18 +343,26 @@ if(isset($_POST["submit"])) {
                 }
             } else $PageStatus="wrongcaptcha";
     if (($PageStatus)&&!($PageStatus=="added")) {
-        $SESSION["value"]["name"]=$_POST["name"];
-        $SESSION["value"]["from"]=$_POST["from"];
-        $SESSION["value"]["link"]=$_POST["link"];
-        $SESSION["value"]["subj"]=$_POST["subj"];
-        $SESSION["value"]["category"]=$_POST["category"];
-        $SESSION["value"]["email"]=$_POST["email"];
-        $SESSION["value"]["text"]=$_POST["text"];
-        $Values=$SESSION["value"];
-    } else if (isset($SESSION["value"])) Unset($SESSION["value"]);
+        $_SESSION["value"]["name"]=$_POST["name"];
+        $_SESSION["value"]["from"]=$_POST["from"];
+        $_SESSION["value"]["link"]=$_POST["link"];
+        $_SESSION["value"]["subj"]=$_POST["subj"];
+        $_SESSION["value"]["category"]=$_POST["category"];
+        $_SESSION["value"]["email"]=$_POST["email"];
+        $_SESSION["value"]["text"]=$_POST["text"];
+        $Values=$_SESSION["value"];
+    } else if (isset($_SESSION["value"])) Unset($_SESSION["value"]);
 }
 
 $Entries=ReadEntries();
+
+if(isset($_POST["reply"])) {
+    $_SESSION["reply"]=$Entries[$_POST["reply"]-1];
+    $GBsearch=false;
+    unset($Entries);
+    $GBreplies=false;
+    $Entries[0]=$_SESSION["reply"];
+} else unset($_SESSION["reply"]);
 
 include "page.php";
 ?>
