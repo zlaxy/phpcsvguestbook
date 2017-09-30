@@ -7,7 +7,7 @@
 ?><!DOCTYPE html>
 <html>
 <head>
-  <title><?php echo $Titles[HeadTitle];?></title>
+  <title><?php echo $Titles["HeadTitle"];?></title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Ubuntu:regular&amp;subset=Latin,Cyrillic">
   <link rel="stylesheet" type="text/css" href="anthrstlsht.css">
