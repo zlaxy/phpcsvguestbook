@@ -24,7 +24,7 @@ function SaveEntries() {
     global $AdminEntries;
     $fhandle=fopen($GBdata,"w");
     foreach($AdminEntries as $e=>$Entry) {
-        unset($Entry[10]);
+        $Entry[10]="";
         fputcsv($fhandle,$Entry);
     }
     fclose($fhandle);
@@ -246,7 +246,7 @@ if ($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))) {
             SaveEntries();
             Unset($_SESSION["EditStatus"]);
             $AdminEntries=ReadEntries();
-        } if ($_SESSION["DeleteStatus"]) {
+        } if (isset($_SESSION["DeleteStatus"])) if ($_SESSION["DeleteStatus"]) {
             foreach($_SESSION["DeleteEntries"] as $e=>$DelEnt) Unset($AdminEntries[$DelEnt]);
             SaveEntries();
             Unset($_SESSION["DeleteEntries"]);

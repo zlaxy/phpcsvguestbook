@@ -61,6 +61,13 @@ function CheckFile() {
     } else return false;
 }
 
+function AddHttp($Link) {
+    if (!preg_match("~^(?:f|ht)tps?://~i",$Link)) {
+        $Link = "http://".$Link;
+    }
+    return $Link;
+}
+
 function AddEntry() {
     global $GBdata;
     global $Titles;
@@ -78,8 +85,8 @@ function AddEntry() {
             else $NewEntry["from"]=strip_tags($_POST["from"]);
         } else $NewEntry["from"]="";
     if ($GBlinkfield) {
-        if (!$GBstriptags) $NewEntry["link"]=$_POST["link"];
-            else $NewEntry["link"]=strip_tags($_POST["link"]);
+        if (!$GBstriptags) $NewEntry["link"]=AddHttp($_POST["link"]);
+            else $NewEntry["link"]=AddHttp(strip_tags($_POST["link"]));
         } else $NewEntry["link"]="";
     $NewEntry["email"]=$_POST["email"];
     if (!$GBstriptags) $NewEntry["text"]=$_POST["text"];
@@ -96,7 +103,10 @@ function AddEntry() {
     if (isset($_SESSION["reply"])) {
         $NewEntry["reply"]=$_SESSION["reply"][5];
         unset($_SESSION["reply"]);
-    }
+    } else $NewEntry["reply"]="";
+    $NewEntry["number"]="";
+    $NewEntry["lock"]="";
+    $NewEntry["sticky"]="";
     $fhandle=fopen($GBdata,"a");
     fputcsv($fhandle,$NewEntry);
     fclose($fhandle);
@@ -248,11 +258,9 @@ function EntriesView() {
     }
     if ($GBreplies) {
         $EntriesReplySorted=$Entries;
-        foreach($Entries as $Entry) {
+        if (isset($Entries)) foreach($Entries as $Entry) {
             if (isset($Entry[9])) {
-                foreach($EntriesReplySorted as $n=>$EntrySort) if ($EntrySort[5]==$Entry[5]) {
-                    $a=$n;
-                }
+                foreach($EntriesReplySorted as $n=>$EntrySort) if ($EntrySort[5]==$Entry[5]) $a=$n;
                 foreach($EntriesReplySorted as $n=>$EntrySort) if ($EntrySort[5]==$Entry[9]) $b=$n;
                 if (isset($b)) {
                     $out=array_splice($EntriesReplySorted, $a, 1);
