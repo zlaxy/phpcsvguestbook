@@ -62,7 +62,7 @@ function CheckFile() {
 }
 
 function AddHttp($Link) {
-    if (!preg_match("~^(?:f|ht)tps?://~i",$Link)) {
+    if (!$Link=="") if (!preg_match("~^(?:f|ht)tps?://~i",$Link)) {
         $Link = "http://".$Link;
     }
     return $Link;
@@ -260,6 +260,7 @@ function EntriesView() {
         $EntriesReplySorted=$Entries;
         if (isset($Entries)) foreach($Entries as $Entry) {
             if (isset($Entry[9])) {
+                unset($a); unset($b);
                 foreach($EntriesReplySorted as $n=>$EntrySort) if ($EntrySort[5]==$Entry[5]) $a=$n;
                 foreach($EntriesReplySorted as $n=>$EntrySort) if ($EntrySort[5]==$Entry[9]) $b=$n;
                 if (isset($b)) {
