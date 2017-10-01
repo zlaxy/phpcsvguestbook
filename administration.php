@@ -50,9 +50,13 @@ function Search($SearchQuery) {
 function AddSearchBar() {
     global $Titles;
     global $GBsearch;
-    if ($GBsearch) if (!(isset($_SESSION["EditStatus"]) or ($_SESSION["DeleteStatus"]=="deletion"))) {
+    global $GBcategoryfield;
+    if ($GBsearch) if (!(isset($_SESSION["EditStatus"]) or (isset($_SESSION["DeleteStatus"])?($_SESSION["DeleteStatus"]=="deletion"):(false)))) {
         echo "<form action=administration.php method=post>";
-        echo "<input type=text name=\"serachq\" value=\"\" maxlength=255>";
+        echo "<input type=text name=\"serachq\" value=\"\" maxlength=255 list=\"browsers\">";
+        echo "<datalist id=\"browsers\">";
+        foreach ($GBcategoryfield as $category) echo "  <option value=\"",$category,"\">";
+        echo "</datalist>";
         echo "<input type=submit name=\"search\" value=\"",$Titles["Search"],"\">";
         echo "</form>";
     }
@@ -63,7 +67,7 @@ function AdminHeaderView() {
     global $GBadmin;
     global $GBpassword;
     echo "<h2><a href=\"index.php\">",$Titles["AdminHeader"],"</a></h2>\n";
-    if ($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))) {
+    if (isset($_SESSION["SessionStatus"])?($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))):false) {
         echo "<div style=\"position: absolute; right: 127px; top: 59px;\">",AddSearchBar(),"</div>";
         echo "<form action=administration.php method=post>\n";
         echo "  <p align=\"right\"><input type=submit name=\"exit\" value=\"",$Titles["AdminExit"],"\"></p>\n";
@@ -98,13 +102,15 @@ function AdminEntriesView() {
     global $GBlinkfield;
     global $GBsubjectfield;
     global $GBcategoryfield;
-    if ($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))) if ($DataStatus=="empty") echo $Titles["EmptyFile"],"\n";
-        else if ($_SESSION["DeleteStatus"]=="deletion") {
-            echo "  ",$Titles["AdminSureDel"]," ",count($_SESSION["DeleteEntries"])," ",$Titles["AdminSureDelMessages"],"?\n";
-            echo "<form action=administration.php method=post>\n";
-            echo "  <input type=submit name=\"applydelete\" value=\"",$Titles["AdminDelete"],"\">\n";
-            echo "  <input type=submit name=\"canceldelete\" value=\"",$Titles["AdminCancel"],"\">\n";
-            echo "</form>\n";
+    if (isset($_SESSION["SessionStatus"])?($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))):false) if ($DataStatus=="empty") echo $Titles["EmptyFile"],"\n";
+        else if (isset($_SESSION["DeleteStatus"])) {
+            if ($_SESSION["DeleteStatus"]=="deletion") {
+                echo "  ",$Titles["AdminSureDel"]," ",count($_SESSION["DeleteEntries"])," ",$Titles["AdminSureDelMessages"],"?\n";
+                echo "<form action=administration.php method=post>\n";
+                echo "  <input type=submit name=\"applydelete\" value=\"",$Titles["AdminDelete"],"\">\n";
+                echo "  <input type=submit name=\"canceldelete\" value=\"",$Titles["AdminCancel"],"\">\n";
+                echo "</form>\n";
+            }
         } else if (isset($_SESSION["EditStatus"])) {
             echo "  ",$Titles["AdminMessage"]," ", ($_SESSION["EditStatus"]),", ",date("j.m.Y, H:i",$AdminEntries[($_SESSION["EditStatus"]-1)][5]),":<br>\n";
             echo "<form action=administration.php method=post>\n";
@@ -133,7 +139,7 @@ function AdminEntriesView() {
                 $SearchResult=Search($_POST["serachq"]);
                 if ($SearchResult) {
                     $GBpagination=0;
-                    unset($AdminEntries);
+                    Unset($AdminEntries);
                     foreach($SearchResult as $n=>$Entry) $AdminEntries[$n]=$Entry[1];
                 } else echo $Titles["NoResult"],": '",$_POST["serachq"],"'.<br>\n";
             }
@@ -218,7 +224,7 @@ if (isset($_POST["canceldelete"])) {
     Unset($_SESSION["DeleteEntries"]);
     }
 if (isset($_POST["canceledit"])) Unset($_SESSION["EditStatus"]);
-if ($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))) {
+if (isset($_SESSION["SessionStatus"])?($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))):false) {
     $AdminEntries=ReadEntries();
     if (isset($_POST["submitdelete"])) {
         $_SESSION["DeleteStatus"]="deletion";
@@ -246,11 +252,13 @@ if ($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))) {
             SaveEntries();
             Unset($_SESSION["EditStatus"]);
             $AdminEntries=ReadEntries();
-        } if (isset($_SESSION["DeleteStatus"])) if ($_SESSION["DeleteStatus"]) {
+        } if (isset($_SESSION["DeleteStatus"])?($_SESSION["DeleteStatus"]):(false)) {
             foreach($_SESSION["DeleteEntries"] as $e=>$DelEnt) Unset($AdminEntries[$DelEnt]);
             SaveEntries();
             Unset($_SESSION["DeleteEntries"]);
-            $_SESSION["DeleteStatus"]="";
+            
+            Unset($_SESSION["DeleteStatus"]);
+            //$_SESSION["DeleteStatus"]="";
             $AdminEntries=ReadEntries();
         }
     } if (!isset($_SESSION["EditStatus"])) for ($e=0;$e<count($AdminEntries);$e++) if (isset($_POST["submit$e"])) $_SESSION["EditStatus"]=($e+1);
