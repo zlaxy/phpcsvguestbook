@@ -171,9 +171,13 @@ function Search($SearchQuery) {
 function AddSearchBar() {
     global $Titles;
     global $GBsearch;
+    global $GBcategoryfield;
     if ($GBsearch) {
         echo "<form action=index.php method=post>";
-        echo "<input type=text name=\"serachq\" value=\"\" maxlength=255>";
+        echo "<input type=text name=\"serachq\" value=\"\" maxlength=255 list=\"browsers\">";
+        echo "<datalist id=\"browsers\">";
+        foreach ($GBcategoryfield as $category) echo "  <option value=\"",$category,"\">";
+        echo "</datalist>";
         echo "<input type=submit name=\"search\" value=\"",$Titles["Search"],"\">";
         echo "</form>";
     }
