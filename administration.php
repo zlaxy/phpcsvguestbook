@@ -53,10 +53,12 @@ function AddSearchBar() {
     global $GBcategoryfield;
     if ($GBsearch) if (!(isset($_SESSION["EditStatus"]) or (isset($_SESSION["DeleteStatus"])?($_SESSION["DeleteStatus"]=="deletion"):(false)))) {
         echo "<form action=administration.php method=post>";
-        echo "<input type=text name=\"serachq\" value=\"\" maxlength=255 list=\"browsers\">";
-        echo "<datalist id=\"browsers\">";
-        foreach ($GBcategoryfield as $category) echo "  <option value=\"",$category,"\">";
-        echo "</datalist>";
+        if ($GBcategoryfield) {
+            echo "<input type=text name=\"serachq\" value=\"\" maxlength=255 list=\"browsers\">";
+            echo "<datalist id=\"browsers\">";
+            foreach ($GBcategoryfield as $category) echo "  <option value=\"",$category,"\">";
+            echo "</datalist>";
+        } else echo "<input type=text name=\"serachq\" value=\"\" maxlength=255>";
         echo "<input type=submit name=\"search\" value=\"",$Titles["Search"],"\">";
         echo "</form>";
     }
