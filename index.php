@@ -208,6 +208,10 @@ function SinlgeEntry($Entry) {
     echo "  ";
     if ($GBreplies&&isset($Entry[9])&&$Entry[9]) echo "<div class=\"reply\">";
     echo "<div class=\"entry\"><div class=\"messages_header\"><h4>";
+    if ($Entry[11]) echo "[",$Titles["Locked"],"] ";
+    if ($Entry[12]) echo "[",$Titles["Sticky"],"] ";
+    if ($GBreplies&&isset($Entry[9])&&$Entry[9]) echo "⤷ ";
+        else echo "◦ ";
     if ($GBshownumbers) echo $Entry[10],". ";
     if ($Entry[2]) echo "<a href=\"",$Entry[2],"\">";
     echo "<b>",$Entry[0],"</b>";
@@ -234,7 +238,7 @@ function SinlgeEntry($Entry) {
     } else echo "  ",nl2br($Entry[4]),"<br>\n";
     if ($Entry[6]) echo "<br><i><b>",$Titles["Response"],":</b><br>\n";
     if ($Entry[6]) echo nl2br($Entry[6]),"</i><br>\n";
-    if ($GBreplies) {
+    if ($GBreplies&&!($Entry[11])) {
         echo "<form action=index.php method=post>";
         echo "<p align=\"right\"><button type=submit name=\"reply\" value=\"",$Entry[10],"\">",$Titles["Reply"],"</button></p>";
         echo "</form>";
@@ -255,23 +259,45 @@ function EntriesView() {
     global $GBsubjectfield;
     global $GBcategoryfield;
     global $GBreplies;
+    global $GBstickylocked;
     if (isset($_SESSION["reply"])) {
         echo $Titles["Replying"],"<br>\n";
     }
-    if ($GBreplies) {
-        $EntriesReplySorted=$Entries;
-        if (isset($Entries)) foreach($Entries as $Entry) {
-            if (isset($Entry[9])) {
-                unset($a); unset($b);
-                foreach($EntriesReplySorted as $n=>$EntrySort) if ($EntrySort[5]==$Entry[5]) $a=$n;
-                foreach($EntriesReplySorted as $n=>$EntrySort) if ($EntrySort[5]==$Entry[9]) $b=$n;
-                if (isset($b)) {
-                    $out=array_splice($EntriesReplySorted, $a, 1);
-                    array_splice($EntriesReplySorted, $b, 0, $out);
-                }
+    if ($GBstickylocked) {
+        if (isset($Entries)) {
+            $EntriesStickySorted=$Entries;
+            $i = count($Entries);
+            while (--$i >= 0) {    
+            if (isset($EntriesStickySorted[$i][12])&&($EntriesStickySorted[$i][12]=="on")) {
+                $item = $EntriesStickySorted[$i];
+                unset($EntriesStickySorted[$i]);
+                array_push($EntriesStickySorted, $item); 
             }
         }
-        $Entries=$EntriesReplySorted;
+        $Entries=array_values($EntriesStickySorted);
+        }
+    }
+    if ($GBreplies) {
+        if (isset($Entries)) {
+            $EntriesReplySorted=$Entries;
+            foreach($Entries as $Entry) {
+                if (isset($Entry[9])) {
+                    unset($a); unset($b);
+                    foreach($EntriesReplySorted as $n=>$EntrySort) if ($EntrySort[5]==$Entry[5]) $a=$n;
+                    foreach($EntriesReplySorted as $n=>$EntrySort) if ($EntrySort[5]==$Entry[9]) {
+                        if (isset($EntrySort[12])&&$EntrySort[12]=="on") $b=$n-1;
+                            else $b=$n;
+                    }
+                    if (isset($b)) {
+                        if (!(isset($Entry[12])&&$Entry[12]=="on")) {
+                            $out=array_splice($EntriesReplySorted, $a, 1);
+                            array_splice($EntriesReplySorted, $b, 0, $out);
+                        }
+                    }
+                }
+            }
+            $Entries=$EntriesReplySorted;
+        }
     }
     if ($DataStatus=="empty") echo $Titles["EmptyFile"];
         else if(isset($_POST["search"])&&isset($_POST["serachq"])) {

@@ -104,6 +104,7 @@ function AdminEntriesView() {
     global $GBlinkfield;
     global $GBsubjectfield;
     global $GBcategoryfield;
+    global $GBstickylocked;
     if (isset($_SESSION["SessionStatus"])?($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))):false) if ($DataStatus=="empty") echo $Titles["EmptyFile"],"\n";
         else if (isset($_SESSION["DeleteStatus"])) {
             if ($_SESSION["DeleteStatus"]=="deletion") {
@@ -132,6 +133,13 @@ function AdminEntriesView() {
             }
             echo "  ",$Titles["AdminMessage"],":<br>\n  <textarea name=\"edittext\" wrap=virtual cols=50 rows=5  maxlength=$GBtextlenght>",$AdminEntries[($_SESSION["EditStatus"]-1)][4],"</textarea><br>\n";
             echo "  ",$Titles["Response"],":<br>\n  <textarea name=\"editresp\" wrap=virtual cols=50 rows=5  maxlength=$GBtextlenght>",$AdminEntries[($_SESSION["EditStatus"]-1)][6],"</textarea><br>\n";
+            if ($GBstickylocked) {
+                echo "  <input type=\"checkbox\" name=\"lock\" ";
+                if ($AdminEntries[($_SESSION["EditStatus"]-1)][11]) echo "checked";
+                echo "> ",$Titles["Locked"],"  <input type=\"checkbox\" name=\"sticky\" ";
+                if ($AdminEntries[($_SESSION["EditStatus"]-1)][12]) echo "checked";
+                echo "> ",$Titles["Sticky"],"<br>\n";
+            }
             echo "  <input type=submit name=\"submiteedit\" value=\"",$Titles["AdminApply"],"\"> ";
             echo "<input type=submit name=\"applydelete\" value=\"",$Titles["AdminDelete"],"\"> ";
             echo "<input type=submit name=\"canceledit\" value=\"",$Titles["AdminCancel"],"\">\n";
@@ -245,6 +253,10 @@ if (isset($_SESSION["SessionStatus"])?($_SESSION["SessionStatus"]==(md5($GBadmin
             else $AdminEntries[($_SESSION["EditStatus"]-1)][7]="";
         if (isset($_POST["editcategory"])) $AdminEntries[($_SESSION["EditStatus"]-1)][8]=$_POST["editcategory"];
             else $AdminEntries[($_SESSION["EditStatus"]-1)][8]="";
+        if (isset($_POST["lock"])) $AdminEntries[($_SESSION["EditStatus"]-1)][11]=$_POST["lock"];
+            else $AdminEntries[($_SESSION["EditStatus"]-1)][11]="";
+        if (isset($_POST["sticky"])) $AdminEntries[($_SESSION["EditStatus"]-1)][12]=$_POST["sticky"];
+            else $AdminEntries[($_SESSION["EditStatus"]-1)][12]="";
         SaveEntries();
         Unset($_SESSION["EditStatus"]);
         $AdminEntries=ReadEntries();
