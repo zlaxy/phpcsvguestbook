@@ -1,4 +1,4 @@
-PHPCSV Guestbook version 0.99.2
+PHPCSV Guestbook version 0.99.3
 
 Simple php guestbook with csv file data storage.
 
@@ -6,14 +6,17 @@ Features:
   - Captcha
   - Admin panel
   - Search
-  - Images upload
+  - Images and files upload
   - 'Read More' button
   - Pagination
   - Categories
   - Replies
   - Locked and sticky posts
+  - Special fields
 
-Working example: https://zlaxyi.soundragon.su/gb
+Working examples:
+ http://arabic.freecluster.eu
+ http://zlaxyi.soundragon.su/gb
 
 PHPCSV Guestbook requires PHP 5.0 or higher version.
 

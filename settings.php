@@ -103,6 +103,7 @@ $Titles["Replied"]="replied";
 $Titles["Replying"]="Replying to this message:";
 $Titles["Locked"]="Locked";
 $Titles["Sticky"]="Sticky";
+$Titles["AttachedFile"]="Attached file";
 $Titles["Field1"]="Field1";
 $Titles["PreField1"]="<i>";
 $Titles["PostField1"]="</i>";
