@@ -87,6 +87,9 @@ function AddEntry() {
     global $GBsubjectfield;
     global $GBcategoryfield;
     global $GBstriptags;
+    global $GBfield1;
+    global $GBfield2;
+    global $GBfield3;
     if (!$GBstriptags) $NewEntry["name"]=$_POST["name"];
         else $NewEntry["name"]=strip_tags($_POST["name"]);
     if ($GBcityfield) {
@@ -116,6 +119,18 @@ function AddEntry() {
     $NewEntry["number"]="";
     $NewEntry["lock"]="";
     $NewEntry["sticky"]="";
+    if ($GBfield1) {
+        if (!$GBstriptags) $NewEntry["field1"]=$_POST["field1"];
+            else $NewEntry["field1"]=strip_tags($_POST["field1"]);
+        } else $NewEntry["field1"]="";
+    if ($GBfield2) {
+        if (!$GBstriptags) $NewEntry["field2"]=$_POST["field2"];
+            else $NewEntry["field2"]=strip_tags($_POST["field2"]);
+        } else $NewEntry["field2"]="";
+    if ($GBfield3) {
+        if (!$GBstriptags) $NewEntry["field3"]=$_POST["field3"];
+            else $NewEntry["field3"]=strip_tags($_POST["field3"]);
+        } else $NewEntry["field3"]="";
     $fhandle=fopen($GBdata,"a");
     fputcsv($fhandle,$NewEntry);
     fclose($fhandle);
@@ -135,6 +150,9 @@ function AddEntryView() {
     global $GBsubjectfield;
     global $GBcategoryfield;
     global $GBfilesize;
+    global $GBfield1;
+    global $GBfield2;
+    global $GBfield3;
     echo "<h2>",$Titles["Page"],"</h2><br>\n";
     if ($PageStatus=="added") echo $Titles["Added"]."<br>\n";
     $captchanumber11=rand(1, 4);
@@ -157,6 +175,9 @@ function AddEntryView() {
         }
         echo "</select><br>\n";
     }
+    if ($GBfield1) echo "  ",$Titles["Field1"],": <input type=text name=\"field1\" value=\"",$Values["field1"],"\" maxlength=255><br>\n";
+    if ($GBfield2) echo "  ",$Titles["Field2"],": <input type=text name=\"field2\" value=\"",$Values["field2"],"\" maxlength=255><br>\n";
+    if ($GBfield3) echo "  ",$Titles["Field3"],": <input type=text name=\"field3\" value=\"",$Values["field3"],"\" maxlength=255><br>\n";
     echo "  ",$Titles["Text"],":<br>\n  <textarea name=\"text\" wrap=virtual cols=50 rows=5  maxlength=$GBtextlenght>",$Values["text"],"</textarea><br>\n";
     if ($GBupload) {
         echo "  <label for=\"file\">".$Titles["FileUpload"]."</label>\n";
@@ -216,6 +237,9 @@ function SinlgeEntry($Entry) {
     global $GBcategoryfield;
     global $GBshownumbers;
     global $GBreplies;
+    global $GBfield1;
+    global $GBfield2;
+    global $GBfield3;
     echo "  ";
     if ($GBreplies&&isset($Entry[9])&&$Entry[9]) echo "<div class=\"reply\">";
     echo "<div class=\"entry\"><div class=\"messages_header\"><h4>";
@@ -234,7 +258,9 @@ function SinlgeEntry($Entry) {
     } else echo $Titles["Wrote"];
     if (($GBsubjectfield)&&($Entry[7])) echo " ",$Titles["About"]," '",$Entry[7],"'";
     if (($GBcategoryfield)&&($Entry[8])) echo " [",$Entry[8],"]";
+    if (($GBfield1)&&($Entry[13])) echo $Titles["PreField1"],$Entry[13],$Titles["PostField1"];
     echo ":</div></h4><br>\n";
+    if (($GBfield2)&&($Entry[14])) echo $Titles["PreField2"],$Entry[14],$Titles["PostField2"];
     if ($GBreadmore>0) {
         $Message=strip_tags($Entry[4]);
         if (strlen($Message)>$GBreadmore) {
@@ -247,6 +273,7 @@ function SinlgeEntry($Entry) {
                 }
         } else echo "  ",nl2br($Entry[4]),"<br>\n";
     } else echo "  ",nl2br($Entry[4]),"<br>\n";
+    if (($GBfield3)&&($Entry[15])) echo $Titles["PreField3"],$Entry[15],$Titles["PostField3"];
     if ($Entry[6]) echo "<br><i><b>",$Titles["Response"],":</b><br>\n";
     if ($Entry[6]) echo nl2br($Entry[6]),"</i><br>\n";
     if ($GBreplies&&!($Entry[11])) {
@@ -402,6 +429,9 @@ if(isset($_POST["submit"])) {
         $_SESSION["value"]["category"]=$_POST["category"];
         $_SESSION["value"]["email"]=$_POST["email"];
         $_SESSION["value"]["text"]=$_POST["text"];
+        $_SESSION["value"]["field1"]=$_POST["field1"];
+        $_SESSION["value"]["field2"]=$_POST["field2"];
+        $_SESSION["value"]["field3"]=$_POST["field3"];
         $Values=$_SESSION["value"];
     } else if (isset($_SESSION["value"])) Unset($_SESSION["value"]);
 }
