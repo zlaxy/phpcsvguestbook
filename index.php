@@ -43,9 +43,11 @@ function ReadEntries() {
 }
 
 function SaveFile() {
-    $filename = substr(md5(uniqid()), 0, 13).'.'.pathinfo($_FILES["uploadedfile"]["name"], PATHINFO_EXTENSION);
-    $uploaddir = "upload/";
-    $uploadfile = $uploaddir.$filename;
+    $postuploaddir = substr(md5(uniqid()), 0, 13);
+    $preuploaddir = "upload/";
+    $filename = $_FILES["uploadedfile"]["name"];
+    $uploadfile = $preuploaddir.$postuploaddir."/".$filename;
+    mkdir($preuploaddir.$postuploaddir, 0755, true);
     if (move_uploaded_file($_FILES["uploadedfile"]["tmp_name"], $uploadfile)) {
         return $uploadfile;
     } else {
@@ -54,11 +56,18 @@ function SaveFile() {
 }
 
 function CheckFile() {
-    global $GBimagesize;
-    if (getimagesize($_FILES["uploadedfile"]["tmp_name"])) {
-        if ((filesize($_FILES["uploadedfile"]["tmp_name"]))<($GBimagesize)) return SaveFile();
-            else return false;
+    global $Titles;
+    global $GBfilesize;
+    global $GBupload;
+    if ($GBfilesize>$_FILES["uploadedfile"]["size"] && $_FILES["uploadedfile"]["size"]>0) {
+        if (in_array("images",$GBupload)) if (getimagesize($_FILES["uploadedfile"]["tmp_name"]))
+            return " <br><img src=\"".SaveFile()."\">";
+        if ($GBupload===true)
+            return " <br><a href=\"".SaveFile()."\">"."<strong>📎</strong> ".$Titles["AttachedFile"]."</a>";
+        if (in_array(mb_strtolower(pathinfo($_FILES["uploadedfile"]["name"], PATHINFO_EXTENSION)),$GBupload))
+            return " <br><a href=\"".SaveFile()."\">"."<strong>📎</strong> ".$Titles["AttachedFile"]."</a>";
     } else return false;
+    return false;
 }
 
 function AddHttp($Link) {
@@ -91,7 +100,7 @@ function AddEntry() {
     $NewEntry["email"]=$_POST["email"];
     if (!$GBstriptags) $NewEntry["text"]=$_POST["text"];
         else $NewEntry["text"]=strip_tags($_POST["text"]);
-    if ($UploadedFile) $NewEntry["text"]=$NewEntry["text"]." <br><img src=\"$UploadedFile\">";
+    if ($UploadedFile) $NewEntry["text"]=$NewEntry["text"].$UploadedFile;
     $NewEntry["datetime"]=time();
     $NewEntry["response"]="";
     if ($GBsubjectfield) {
@@ -125,6 +134,7 @@ function AddEntryView() {
     global $GBlinkfield;
     global $GBsubjectfield;
     global $GBcategoryfield;
+    global $GBfilesize;
     echo "<h2>",$Titles["Page"],"</h2><br>\n";
     if ($PageStatus=="added") echo $Titles["Added"]."<br>\n";
     $captchanumber11=rand(1, 4);
@@ -150,6 +160,7 @@ function AddEntryView() {
     echo "  ",$Titles["Text"],":<br>\n  <textarea name=\"text\" wrap=virtual cols=50 rows=5  maxlength=$GBtextlenght>",$Values["text"],"</textarea><br>\n";
     if ($GBupload) {
         echo "  <label for=\"file\">".$Titles["FileUpload"]."</label>\n";
+        echo "  <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"".$GBfilesize."\" />\n";
         echo "  <input type=\"file\" name=\"uploadedfile\"><br>\n";
     }
     if ($GBcaptcha) echo "  ",$Titles["Captcha"],": <font class=\"text\">$captchanumber11</font><font>$captchanumber11</font><font>$captchanumber12</font> ",$Titles["CaptchaPlus"]," <font>$captchanumber21</font><font>$captchanumber22</font><font class=\"text\">$captchanumber21</font> = <input type=text name=\"captcha\" size=2 maxlength=2> ?<br>\n";
@@ -157,7 +168,7 @@ function AddEntryView() {
     echo "</form>\n";
     if ($PageStatus=="emptyname") echo $Titles["EmptyName"],"<br>\n";
     if ($PageStatus=="emptytext") echo $Titles["EmptyText"],"<br>\n";
-    if ($PageStatus=="wrongimage") echo $Titles["WrongImage"],"<br>\n";
+    if ($PageStatus=="wrongfile") echo $Titles["WrongFile"],"<br>\n";
     if ($PageStatus=="wrongcaptcha") echo $Titles["WrongCaptcha"],"<br>\n";
 }
 
@@ -364,21 +375,21 @@ if(isset($_POST["submit"])) {
     if (!$_POST["text"]) $PageStatus="emptytext";
     if (!$_POST["name"]) $PageStatus="emptyname";
     if ($GBupload) {
-        if ($_FILES["uploadedfile"]["tmp_name"]) {
+        if ($_FILES["uploadedfile"]["name"]) {
             $UploadedFile=CheckFile();
-            if (!$UploadedFile) {
-                $PageStatus="wrongimage";
+            if ($UploadedFile==false) {
+                $PageStatus="wrongfile";
             }
         }
     }
     if (($_POST["name"])&&($_POST["text"]))
         if (isset($_POST["captcha"])&&(md5(base64_encode($_POST["captcha"]))==$_SESSION["captcha"])) {
-            if (!isset($PageStatus)=="wrongimage") {
+            if (!isset($PageStatus)=="wrongfile") {
                 AddEntry();
                 if ($GBnotificationmailto) SendMail();
             }
         } else if (!$GBcaptcha) {
-                if (!isset($PageStatus)=="wrongimage") {
+                if (!isset($PageStatus)=="wrongfile") {
                     AddEntry();
                     if ($GBnotificationmailto) SendMail();
                 }

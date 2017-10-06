@@ -13,9 +13,20 @@ $GBpassword="password";
 $GBpagination=10; // pagination for entries, 0 - disabled
 $GBreadmore=255; // number of symbols for 'Read More' feature, 0 - shows full entries
 $GBsearch=true; // enable or disable search bar
-$GBcaptcha=false; // enable or disable captcha
-$GBupload=true; // enable or disable upload image feature
-$GBimagesize=1048576; // maximum image size
+$GBcaptcha=true; // enable or disable captcha
+$GBupload=array(  // enable or disable upload feature
+    0=>"images",  // $GBupload=false; - disabled
+    1=>"pdf",     // $GBupload=true; - enabled for all files
+    2=>"odt",     // $GBupload=array(); - enabled for file types from this array
+    3=>"odx",
+    4=>"doc",
+    5=>"docx",
+    6=>"xls",
+    7=>"xlsx",
+    8=>"txt",
+    9=>"zip",
+    10=>"rar");
+$GBfilesize=1048576; // maximum file size
 $GBnotificationmailto=""; // leave empty if you don't want send notification
 $GBnotificationmailfrom="";
 $GBtextlenght=7168; // maximum size of entry text
@@ -79,8 +90,8 @@ $Titles["Next"]=">>";
 $Titles["Search"]="Search";
 $Titles["NoResult"]="No search result";
 $Titles["ReadMore"]="Read more";
-$Titles["FileUpload"]="Upload image:";
-$Titles["WrongImage"]="Can't upload image.";
+$Titles["FileUpload"]="Upload file:";
+$Titles["WrongFile"]="Can't upload file.";
 $Titles["Subject"]="Subject";
 $Titles["Category"]="Category";
 $Titles["About"]="about";
@@ -89,4 +100,5 @@ $Titles["Replied"]="replied";
 $Titles["Replying"]="Replying to this message:";
 $Titles["Locked"]="Locked";
 $Titles["Sticky"]="Sticky";
+$Titles["AttachedFile"]="Attached file";
 ?>
