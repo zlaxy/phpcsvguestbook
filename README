@@ -1,8 +1,9 @@
-PHPCSV Guestbook version 0.99.4
+PHPCSV Guestbook version 0.99.5
 
 Simple php guestbook with csv file data storage.
 
 Features:
+  - English, Arabic and Russian localization
   - Captcha
   - Admin panel
   - Search
