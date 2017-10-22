@@ -47,6 +47,7 @@ $GBstickylocked=true; // stick or lock entries in admin panel
 $GBfield1=true; // enable or disable special field 1
 $GBfield2=true; // enable or disable special field 2
 $GBfield3=true; // enable or disable special field 3
+$GBemailfield=true; // enable or disable email field
 $Titles["HeadTitle"]="Guestbook";
 $Titles["Page"]="Guestbook";
 $Titles["Name"]="Your name";

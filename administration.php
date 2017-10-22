@@ -84,12 +84,14 @@ function SingleEntry($Entry) {
     global $GBlinkfield;
     global $GBsubjectfield;
     global $GBcategoryfield;
+    global $GBemailfield;
     echo "  <tr><td>",($Entry[10]),"<input type=checkbox name=\"cb",($Entry[10]-1),"\" value=\"checked\"></td><td>$Entry[0]</td>";
     if ($GBcityfield) echo "<td>$Entry[1]</td>";
     if ($GBlinkfield) echo "<td>$Entry[2]</td>";
     if ($GBsubjectfield) echo "<td>$Entry[7]</td>";
     if ($GBcategoryfield) echo "<td>$Entry[8]</td>";
-    echo "<td>$Entry[3]</td><td>",nl2br($Entry[4]),"</td><td>",nl2br($Entry[6]),"</td><td>",date("j.m.Y, H:i",$Entry[5]),"</td><td><input type=submit name=\"submit",($Entry[10]-1),"\" value=\"",$Titles["AdminEdit"],"\"></td></tr>\n";
+    if ($GBemailfield) echo "<td>$Entry[3]</td>";
+    echo "<td>",nl2br($Entry[4]),"</td><td>",nl2br($Entry[6]),"</td><td>",date("j.m.Y, H:i",$Entry[5]),"</td><td><input type=submit name=\"submit",($Entry[10]-1),"\" value=\"",$Titles["AdminEdit"],"\"></td></tr>\n";
 }
 
 function AdminEntriesView() {
@@ -108,6 +110,7 @@ function AdminEntriesView() {
     global $GBfield1;
     global $GBfield2;
     global $GBfield3;
+    global $GBemailfield;
     if (isset($_SESSION["SessionStatus"])?($_SESSION["SessionStatus"]==(md5($GBadmin.$GBpassword))):false) if ($DataStatus=="empty") echo $Titles["EmptyFile"],"\n";
         else if (isset($_SESSION["DeleteStatus"])) {
             if ($_SESSION["DeleteStatus"]=="deletion") {
@@ -123,7 +126,7 @@ function AdminEntriesView() {
             echo "  ",$Titles["AdminName"],": <input type=text name=\"editname\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][0],"\" maxlength=255><br>\n";
             if ($GBcityfield) echo "  ",$Titles["City"]," <input type=text name=\"editfrom\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][1],"\" maxlength=255><br>\n";
             if ($GBlinkfield) echo "  ",$Titles["Link"]," <input type=text name=\"editlink\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][2],"\" maxlength=255><br>\n";
-            echo "  ",$Titles["Email"]," <input type=text name=\"editmail\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][3],"\" maxlength=255><br>\n";
+            if ($GBemailfield) echo "  ",$Titles["Email"]," <input type=text name=\"editmail\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][3],"\" maxlength=255><br>\n";
             if ($GBsubjectfield) echo "  ",$Titles["Subject"]," <input type=text name=\"editsubj\" value=\"",$AdminEntries[($_SESSION["EditStatus"]-1)][7],"\" maxlength=255><br>\n";
             if ($GBcategoryfield) {
                 echo "  ",$Titles["Category"]," <select name=\"editcategory\">";
@@ -201,7 +204,8 @@ function AdminEntriesView() {
                 if ($GBlinkfield) echo "<th>",$Titles["Link"],"</th>";
                 if ($GBsubjectfield) echo "<th>",$Titles["Subject"],"</th>";
                 if ($GBcategoryfield) echo "<th>",$Titles["Category"],"</th>";
-                echo "<th>",$Titles["Email"],"</th><th>",$Titles["AdminMessage"],"</th><th>",$Titles["Response"],"</th><th>",$Titles["AdminDate"],"</th><th></th></tr>\n";
+                if ($GBemailfield) echo "<th>",$Titles["Email"],"</th>";
+                echo "<th>",$Titles["AdminMessage"],"</th><th>",$Titles["Response"],"</th><th>",$Titles["AdminDate"],"</th><th></th></tr>\n";
                 for ($e = ($GBpagination*$CurrentPage); $e < ($GBpagination*($CurrentPage+1)); $e++) {
                     if ($e>=count($Entries)) break;
                     $Entry = $Entries[$e];
@@ -215,7 +219,8 @@ function AdminEntriesView() {
                 if ($GBlinkfield) echo "<th>",$Titles["Link"],"</th>";
                 if ($GBsubjectfield) echo "<th>",$Titles["Subject"],"</th>";
                 if ($GBcategoryfield) echo "<th>",$Titles["Category"],"</th>";
-                echo "<th>",$Titles["Email"],"</th><th>",$Titles["AdminMessage"],"</th><th>",$Titles["Response"],"</th><th>",$Titles["AdminDate"],"</th><th></th></tr>\n";
+                if ($GBemailfield) echo "<th>",$Titles["Email"],"</th>";
+                echo "<th>",$Titles["AdminMessage"],"</th><th>",$Titles["Response"],"</th><th>",$Titles["AdminDate"],"</th><th></th></tr>\n";
                 $Entries=array_reverse($AdminEntries);
                 foreach($Entries as $e=>$Entry) SingleEntry($Entry);
             }
