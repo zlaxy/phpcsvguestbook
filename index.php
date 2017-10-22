@@ -166,7 +166,12 @@ function AddEntryView() {
     if ($GBcityfield) echo "  ",$Titles["City"],": <input type=text name=\"from\" value=\"",$Values["from"],"\" maxlength=255><br>\n";
     if ($GBlinkfield) echo "  ",$Titles["Link"],": <input type=text name=\"link\" value=\"",$Values["link"],"\" maxlength=255><br>\n";
     if ($GBemailfield) echo "  ",$Titles["Email"],": <input type=text name=\"email\" value=\"",$Values["email"],"\" maxlength=255> ($Titles[NotPublic])<br>\n";
-    if ($GBsubjectfield) echo "  ",$Titles["Subject"],": <input type=text name=\"subj\" value=\"",$Values["subj"],"\" maxlength=255><br>\n";
+    if ($GBsubjectfield) {
+        echo "  ",$Titles["Subject"],": <input type=text name=\"subj\" value=\"";
+        if(isset($_POST["reply"])) echo $_SESSION["reply"][7];
+            else echo $Values["subj"];
+        echo "\" maxlength=255><br>\n";
+    }
     if ($GBcategoryfield) {
         echo "  ",$Titles["Category"],": <select name=\"category\">";
         foreach($GBcategoryfield as $Category) {
