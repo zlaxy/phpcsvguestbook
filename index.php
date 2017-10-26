@@ -8,6 +8,12 @@
 session_start();
 include "settings.php";
 
+switch($GBlanguage) {
+    case "ar": include "settings_ar.php";
+    case "ru": include "settings_ru.php";
+      default: include "settings_en.php";
+}
+
 function SendMail() {
     global $Titles;
     global $GBnotificationmailto;
