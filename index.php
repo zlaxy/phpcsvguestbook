@@ -160,6 +160,11 @@ function AddEntryView() {
     global $GBfield2;
     global $GBfield3;
     global $GBemailfield;
+    global $singleEntry;
+    if ($singleEntry) {
+        echo "<a href=\".\"><h2>",$Titles["Page"],"</h2></a><br>\n";
+        return;
+    }
     echo "<h2>",$Titles["Page"],"</h2><br>\n";
     if ($PageStatus=="added") echo $Titles["Added"]."<br>\n";
     $captchanumber11=rand(1, 4);
@@ -264,7 +269,10 @@ function SinlgeEntry($Entry) {
     echo "<b>",$Entry[0],"</b>";
     if ($Entry[2]) echo "</a>";
     if ($Entry[1]) echo " ",$Titles["From"]," <b>",$Entry[1],"</b>";
-    echo ", ",date("j.m.Y, H:i",$Entry[5]),", ";
+    echo ", ";
+    echo "<a href=\"?entry=",$Entry[5],"\">";
+    echo date("j.m.Y, H:i",$Entry[5]);
+    echo "</a>, ";
     if ($GBreplies&&isset($Entry[9])&&$Entry[9]) {
         echo $Titles["Replied"];
     } else echo $Titles["Wrote"];
@@ -450,7 +458,7 @@ if(isset($_POST["submit"])) {
 
 $Entries=ReadEntries();
 
-if(isset($_POST["reply"])) {
+if (isset($_POST["reply"])) {
     $_SESSION["reply"]=$Entries[$_POST["reply"]-1];
     $GBsearch=false;
     unset($Entries);
@@ -458,5 +466,22 @@ if(isset($_POST["reply"])) {
     $Entries[0]=$_SESSION["reply"];
 } else unset($_SESSION["reply"]);
 
+if (isset($_GET["entry"])) {
+    foreach($Entries as $Entry) {
+        if ($Entry[5] == $_GET["entry"]) {
+            $newEntries[0] = $Entry;
+        }
+    }
+    foreach($Entries as $Entry) {
+        if ($Entry[9] == $_GET["entry"]) {
+            $newEntries[] = $Entry;
+        }
+    }
+    $GBsearch=false;
+    $singleEntry = true;
+    $Entries = $newEntries;
+}
+
 include "page.php";
+
 ?>
