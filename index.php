@@ -445,8 +445,10 @@ if(isset($_POST["submit"])) {
         $_SESSION["value"]["name"]=$_POST["name"];
         $_SESSION["value"]["from"]=$_POST["from"];
         $_SESSION["value"]["link"]=$_POST["link"];
-        $_SESSION["value"]["subj"]=$_POST["subj"];
-        $_SESSION["value"]["category"]=$_POST["category"];
+        if ($GBsubjectfield) $_SESSION["value"]["subj"]=$_POST["subj"];
+            else $_SESSION["value"]["subj"]="";
+        if ($GBcategoryfield) $_SESSION["value"]["category"]=$_POST["category"];
+            else $_SESSION["value"]["category"]="";
         $_SESSION["value"]["email"]=$_POST["email"];
         $_SESSION["value"]["text"]=$_POST["text"];
         $_SESSION["value"]["field1"]=$_POST["field1"];
