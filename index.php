@@ -3,7 +3,7 @@
  * Main program file of PHPCSV Guestbook
  * See settings.php for configuration.
  * Edit page.php for change appearance.
- * See license.txt for licensing information.
+ * See LICENSE for licensing information.
  */
 session_start();
 include "settings.php";
