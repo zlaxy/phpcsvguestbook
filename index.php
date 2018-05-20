@@ -233,16 +233,19 @@ function AddSearchBar() {
     global $Titles;
     global $GBsearch;
     global $GBcategoryfield;
-    if ($GBsearch) {
-        echo "<form action=index.php method=post>";
-        if ($GBcategoryfield) {
-            echo "<input type=text name=\"serachq\" value=\"\" maxlength=255 list=\"browsers\">";
-            echo "<datalist id=\"browsers\">";
-            foreach ($GBcategoryfield as $category) echo "  <option value=\"",$category,"\">";
-            echo "</datalist>";
-        } else echo "<input type=text name=\"serachq\" value=\"\" maxlength=255>";
-        echo "<input type=submit name=\"search\" value=\"",$Titles["Search"],"\">";
-        echo "</form>";
+    global $GBfeedbackFormMode;
+    if (!$GBfeedbackFormMode) {
+        if ($GBsearch) {
+            echo "<form action=index.php method=post>";
+            if ($GBcategoryfield) {
+                echo "<input type=text name=\"serachq\" value=\"\" maxlength=255 list=\"browsers\">";
+                echo "<datalist id=\"browsers\">";
+                foreach ($GBcategoryfield as $category) echo "  <option value=\"",$category,"\">";
+                echo "</datalist>";
+            } else echo "<input type=text name=\"serachq\" value=\"\" maxlength=255>";
+            echo "<input type=submit name=\"search\" value=\"",$Titles["Search"],"\">";
+            echo "</form>";
+        }
     }
 }
 
@@ -320,6 +323,8 @@ function EntriesView() {
     global $GBcategoryfield;
     global $GBreplies;
     global $GBstickylocked;
+    global $GBfeedbackFormMode;
+    if ($GBfeedbackFormMode) return;
     if (isset($_SESSION["reply"])) {
         echo $Titles["Replying"],"<br>\n";
     }

@@ -10,6 +10,9 @@ $GBdata=".htgbdb.csv";
 $GBadmin="root";
 $GBpassword="password";
 
+$GBfeedbackFormMode=false; // feedback form mode (does not show any records)
+                           // نموذج التعليقات (لا تظهر أي سجلات)
+                           // режим формы обратной связи (не показывать опубликованные записи)
 $GBpagination=10; // pagination for entries, 0 - disabled
                   // عدد الإدخالات في الصفحة الواحدة, 0 - معطل
                   // количество записей на странице, 0 - все записи на одной странице
