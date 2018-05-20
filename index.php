@@ -30,9 +30,11 @@ function SendMail() {
     if ($GBsubjectfield) $message=$message." ".$_POST["subj"];
     if ($GBcategoryfield) $message=$message." [".$_POST["category"]."]";
     $message=$message.":\r\n\r\n".$_POST["text"]."\r\n\r\n_____\r\n".$Titles["MailAdmin"];
-    mail($GBnotificationmailto, $Titles["MailSubject"], $message,
-    "From: ".$GBnotificationmailfrom." \r\n"."Content-type: text/plain; charset=utf-8\r\n"
-    ."X-Mailer: PHP/".phpversion());
+    foreach ($GBnotificationmailto as $email) {
+        mail($email, $Titles["MailSubject"], $message,
+        "From: ".$GBnotificationmailfrom." \r\n"."Content-type: text/plain; charset=utf-8\r\n"
+        ."X-Mailer: PHP/".phpversion());
+    }
 }
 
 function ReadEntries() {

@@ -6,7 +6,7 @@
  * Please, change $GBadmin and $GBpassword parameters for access to administration page.
  */
 
-$GBdata="gbdb.csv";
+$GBdata=".htgbdb.csv";
 $GBadmin="root";
 $GBpassword="password";
 
@@ -37,10 +37,12 @@ $GBupload=array(  // enable or disable upload feature
 $GBfilesize=1048576; // maximum file size
                      // أقصى حجم ملف
                      // максимальный размер загружаемого файла
-$GBnotificationmailto=""; // leave empty if you don't want send notification
-                          // ترك فارغة إذا كنت لا تريد إرسال إشعار
-                          // оставьте поле пустым, если не хотите отправки уведомлений о новых записях
-$GBnotificationmailfrom="";
+$GBnotificationmailto=array(    // enable or disable email notifications, false - disabled, array - addresses
+    0=>"somemail@mail.com",     // تمكين أو تعطيل إعلامات البريد الإلكتروني، كاذبة - تعطيل، مجموعة من العناوين.
+    1=>"anothermail@mail.com"); // включение или отключение уведомлений на почту, false - отключено, array - список адресов
+$GBnotificationmailfrom="gb@mail.com"; // mailfrom field for notifications
+                                       // البريد من الميدان للإشعارات
+                                       // поле mailfrom для уведомленеий
 $GBtextlenght=7168; // maximum size of entry text
                     // أقصى حجم نص مدخل
                     // максимальное количество символов для текста записи
