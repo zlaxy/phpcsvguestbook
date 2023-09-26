@@ -284,7 +284,7 @@ function SinlgeEntry($Entry) {
     if (($GBsubjectfield)&&($Entry[7])) echo " ",$Titles["About"]," '",$Entry[7],"'";
     if (($GBcategoryfield)&&($Entry[8])) echo " [",$Entry[8],"]";
     if (($GBfield1)&&($Entry[13])) echo $Titles["PreField1"],$Entry[13],$Titles["PostField1"];
-    echo ":</div></h4><br>\n";
+    echo ":</h4></div><br>\n";
     if (($GBfield2)&&($Entry[14])) echo $Titles["PreField2"],$Entry[14],$Titles["PostField2"];
     if ($GBreadmore>0) {
         $Message=strip_tags($Entry[4]);
