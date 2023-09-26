@@ -1,3 +1,6 @@
+**Actual development is here:** https://gitlab.com/zlax/phpcsvguestbook
+
+
 PHPCSV Guestbook version 0.99.8
 
 Simple php guestbook/feedback form with csv file data storage.
@@ -16,8 +19,7 @@ Features:
   - Special fields
   - Feedback form mode
 
-Working examples:
- http://arabic.freecluster.eu
+Working example:
  http://zlaxyi.soundragon.su/gb
 
 PHPCSV Guestbook requires PHP 5.0 or higher version.
@@ -26,8 +28,7 @@ Installation:
 
 1. Upload all files from repository to your website folder or sub-folder.
 
-Repository: https://github.com/zlaxy/phpcsvguestbook
-Archive: https://github.com/zlaxy/phpcsvguestbook/archive/master.zip
+Repository: https://gitlab.com/zlax/phpcsvguestbook
 
 2. Edit settings.php: change $GBadmin and $GBpassword (and other variables if necessary)
 
